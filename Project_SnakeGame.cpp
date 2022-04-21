@@ -9,10 +9,6 @@
 #include <filesystem>
 namespace fs = std::experimental::filesystem;
 using namespace std;
-/*typedef struct _COORD {
-	SHORT X;
-	SHORT Y;
-} COORD, * PCOORD;*/
 //constants
 #define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 4
