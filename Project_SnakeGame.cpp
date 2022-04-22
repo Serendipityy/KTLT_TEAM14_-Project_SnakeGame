@@ -1,4 +1,4 @@
-#include <windows.h> //for HWND
+﻿#include <windows.h> //for HWND
 #include <iostream>
 #include <time.h> //for srand(time(NULL));
 #include <conio.h>//for getch()
@@ -25,24 +25,28 @@ int SIZE_SNAKE;
 int STATE;
 int Score;
 int threadrun = 1;
+// Cố định màn hình Console
 void FixconsoleWindow() {
 	HWND consoleWindow = GetConsoleWindow();
 	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
+// Dịch chuyển
 void GotoXY(int x, int y) {
 	COORD coord;
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+// Kiểm tra vị trí của thức ăn
 bool IsValid(int x, int y) {
 	for (int i = 0; i < SIZE_SNAKE; i++)
 		if (snake[i].x == x && snake[i].y == y)
 			return false;
 	return true;
 }
+
 void GenerateFood() {
 	int x, y;
 	srand(time(NULL));
@@ -84,7 +88,6 @@ void ShowCur(bool CursorVisibility)
 
 	ConCurInf.dwSize = 10;
 	ConCurInf.bVisible = CursorVisibility;
-
 	SetConsoleCursorInfo(handle, &ConCurInf);
 }
 void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY = 0) {
@@ -155,8 +158,20 @@ void DrawSnakeAndFood(char str) {
 		printf("%c", str);
 	}
 }
+// Rắn chạm thân
+bool SnakeTouchBody(int x, int y)
+{
+	for (int i = 1; i < SIZE_SNAKE; i++)
+	{
+		if (x == snake[i].x && y == snake[i].y)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 void MoveRight() {
-	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE) {
+	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x+1, snake[SIZE_SNAKE - 1].y) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -170,7 +185,7 @@ void MoveRight() {
 		snake[SIZE_SNAKE - 1].x++;
 	}
 }void MoveLeft() {
-	if (snake[SIZE_SNAKE - 1].x - 1 == 0) {
+	if (snake[SIZE_SNAKE - 1].x - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x-1, snake[SIZE_SNAKE - 1].y) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -185,7 +200,7 @@ void MoveRight() {
 	}
 }
 void MoveDown() {
-	if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE) {
+	if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -200,7 +215,7 @@ void MoveDown() {
 	}
 }
 void MoveUp() {
-	if (snake[SIZE_SNAKE - 1].y - 1 == 0) {
+	if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -280,6 +295,7 @@ void ProcessSave() {
 	strcat_s(name, ".txt");
 	SaveData(name);
 }
+
 void main() {
 	int temp;
 	FixconsoleWindow();
