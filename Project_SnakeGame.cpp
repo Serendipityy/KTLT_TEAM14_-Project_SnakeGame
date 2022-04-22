@@ -16,6 +16,7 @@ using namespace std;
 //GLOBAL variables
 POINT snake[10];
 POINT food[4];
+//Mảng chứa mssv các thành viên
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,
 2,1,1,2,0,4,6,4,
@@ -154,6 +155,7 @@ void ProcessDead() {
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	printf("Dead, type y to continue or anykey to exit");
 }
+//Hàm xóa vị trí cũ của rắn và thức ăn
 void ClearSnakeAndFood(char str) {
 	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
 	printf("%c", str);
