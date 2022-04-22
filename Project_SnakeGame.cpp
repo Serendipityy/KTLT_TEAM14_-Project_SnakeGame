@@ -10,12 +10,17 @@
 namespace fs = std::experimental::filesystem;
 using namespace std;
 //constants
-#define MAX_SIZE_SNAKE 10
+#define MAX_SIZE_SNAKE 40
 #define MAX_SIZE_FOOD 4
 #define MAX_SPEED 3
 //GLOBAL variables
 POINT snake[10];
 POINT food[4];
+int MSSV[40] = { 2,1,1,2,0,4,4,9,
+2,1,1,2,0,4,5,
+2,1,1,2,0,4,6,4,
+2,1,1,2,0,4,7,5,
+2,1,1,2,0,4,8,5 };
 int CHAR_LOCK;
 int MOVING;
 int SPEED;
@@ -150,12 +155,20 @@ void ProcessDead() {
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	printf("Dead, type y to continue or anykey to exit");
 }
-void DrawSnakeAndFood(char str) {
+void ClearSnakeAndFood(char str) {
 	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
 	printf("%c", str);
 	for (int i = 0; i < SIZE_SNAKE; i++) {
 		GotoXY(snake[i].x, snake[i].y);
 		printf("%c", str);
+	}
+}
+void DrawSnakeAndFood(char str) {
+	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
+	printf("%c", str);
+	for (int i = 0; i < SIZE_SNAKE; i++) {
+		GotoXY(snake[i].x, snake[i].y);
+		printf("%d", MSSV[SIZE_SNAKE - 1 - i]);
 	}
 }
 // Rắn chạm thân
@@ -233,7 +246,7 @@ void ThreadFunc() {
 	while (1) {
 		if (STATE == 1)
 		{
-			DrawSnakeAndFood(' ');
+			ClearSnakeAndFood(' ');
 			switch (MOVING) {
 			case 'A':
 				MoveLeft();
