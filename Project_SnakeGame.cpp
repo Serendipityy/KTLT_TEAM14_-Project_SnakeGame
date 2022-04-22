@@ -140,7 +140,6 @@ void Eat() {
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1)
 	{
 		FOOD_INDEX = 0;
-		SIZE_SNAKE = 6;
 		if (SPEED == MAX_SPEED) SPEED = 1;
 		else SPEED++;
 		GenerateFood();
