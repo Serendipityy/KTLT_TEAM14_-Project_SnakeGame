@@ -16,7 +16,6 @@ using namespace std;
 //GLOBAL variables
 POINT snake[10];
 POINT food[4];
-//Mảng chứa mssv các thành viên
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
 2,1,1,2,0,4,6,4,
@@ -134,7 +133,6 @@ void PauseGame(HANDLE t) {
 	SuspendThread(t);
 }
 void Eat() {
-	PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
 	GotoXY(83, 1);
 	Score++;
 	cout << Score;
@@ -152,12 +150,10 @@ void Eat() {
 	}
 }
 void ProcessDead() {
-	PlaySound(TEXT("oh no sound.wav"), NULL, SND_ASYNC);
 	STATE = 0;
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	printf("Dead, type y to continue or anykey to exit");
 }
-//Hàm xóa vị trí cũ của rắn và thức ăn
 void ClearSnakeAndFood(char str) {
 	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
 	printf("%c", str);
@@ -187,7 +183,7 @@ bool SnakeTouchBody(int x, int y)
 	return false;
 }
 void MoveRight() {
-	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x+1, snake[SIZE_SNAKE - 1].y) == true)) {
+	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -201,7 +197,7 @@ void MoveRight() {
 		snake[SIZE_SNAKE - 1].x++;
 	}
 }void MoveLeft() {
-	if (snake[SIZE_SNAKE - 1].x - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x-1, snake[SIZE_SNAKE - 1].y) == true)) {
+	if (snake[SIZE_SNAKE - 1].x - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)) {
 		ProcessDead();
 	}
 	else {
@@ -356,3 +352,4 @@ void main() {
 		}
 	}
 }
+
