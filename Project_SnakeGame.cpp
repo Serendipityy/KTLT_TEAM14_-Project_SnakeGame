@@ -134,6 +134,7 @@ void PauseGame(HANDLE t) {
 	SuspendThread(t);
 }
 void Eat() {
+	PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
 	GotoXY(83, 1);
 	Score++;
 	cout << Score;
@@ -151,6 +152,7 @@ void Eat() {
 	}
 }
 void ProcessDead() {
+	PlaySound(TEXT("oh no sound.wav"), NULL, SND_ASYNC);
 	STATE = 0;
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	printf("Dead, type y to continue or anykey to exit");
