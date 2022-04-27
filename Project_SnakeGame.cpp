@@ -270,7 +270,7 @@ void ThreadFunc() {
 				break;
 			}
 			DrawSnakeAndFood('0');
-			Sleep(300 / SPEED);
+			Sleep(150 / SPEED);
 		}
 	}
 }
