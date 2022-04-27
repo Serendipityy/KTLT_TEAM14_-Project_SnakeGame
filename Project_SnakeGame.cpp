@@ -10,11 +10,11 @@
 namespace fs = std::experimental::filesystem;
 using namespace std;
 //constants
-#define MAX_SIZE_SNAKE 40
+#define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 4
 #define MAX_SPEED 3
 //GLOBAL variables
-POINT snake[10];
+POINT snake[40];
 POINT food[4];
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
@@ -95,6 +95,11 @@ void ShowCur(bool CursorVisibility)
 	ConCurInf.bVisible = CursorVisibility;
 	SetConsoleCursorInfo(handle, &ConCurInf);
 }
+void DrawLine(int x, int y, int width) {
+	GotoXY(x + 1, y);
+	Color(9);
+	for (int i = 1; i < width; i++) cout << char(205);
+}
 void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY = 0) {
 	GotoXY(x, y);
 	Color(9);
@@ -116,7 +121,9 @@ void StartGame() {
 	system("cls");
 	ResetData();
 	fontsize(16, 16);
-	DrawBoard(75, 0, 15, 15);
+	DrawBoard(75, 0, 30, HEIGH_CONSOLE);
+	DrawLine(75, 8, 30);
+	DrawLine(75, 16, 30);
 	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
 	GotoXY(77, 1);
 	cout << "Score:" << Score;
@@ -133,6 +140,7 @@ void PauseGame(HANDLE t) {
 	SuspendThread(t);
 }
 void Eat() {
+	//PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
 	GotoXY(83, 1);
 	Score++;
 	cout << Score;
@@ -151,6 +159,7 @@ void Eat() {
 }
 void ProcessDead() {
 	STATE = 0;
+	//PlaySound(TEXT("oh no sound.wav"), NULL, SND_ASYNC);
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	printf("Dead, type y to continue or anykey to exit");
 }
@@ -261,7 +270,7 @@ void ThreadFunc() {
 				break;
 			}
 			DrawSnakeAndFood('0');
-			Sleep(100 / SPEED);
+			Sleep(300 / SPEED);
 		}
 	}
 }
@@ -298,7 +307,7 @@ void ProcessLoad() {
 void ProcessSave() {
 	char name[20];
 	GotoXY(0, HEIGH_CONSOLE + 2);
-	cout << "Enter name ";
+	cout << "Enter name: ";
 	//cin.ignore();
 	//_getch();
 	fflush(stdin);
@@ -352,4 +361,3 @@ void main() {
 		}
 	}
 }
-
