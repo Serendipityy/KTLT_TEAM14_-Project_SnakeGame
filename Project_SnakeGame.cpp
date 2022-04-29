@@ -29,6 +29,7 @@ int FOOD_INDEX;
 int SIZE_SNAKE;
 int STATE;
 int Score;
+int LEVEL;
 int threadrun = 1;
 // Cố định màn hình Console
 void FixconsoleWindow() {
@@ -37,6 +38,48 @@ void FixconsoleWindow() {
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
+
+// Ẩn thanh cuộn trên màn hình Console
+void RemoveScrollbar()
+{
+	// get handle to the console window
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	// retrieve screen buffer info
+	CONSOLE_SCREEN_BUFFER_INFO scrBufferInfo;
+	GetConsoleScreenBufferInfo(hOut, &scrBufferInfo);
+
+	// current window size
+	short winWidth = scrBufferInfo.srWindow.Right - scrBufferInfo.srWindow.Left + 1;
+	short winHeight = scrBufferInfo.srWindow.Bottom - scrBufferInfo.srWindow.Top + 1;
+
+	// current screen buffer size
+	short scrBufferWidth = scrBufferInfo.dwSize.X;
+	short scrBufferHeight = scrBufferInfo.dwSize.Y;
+
+	// to remove the scrollbar, make sure the window height matches the screen buffer height
+	COORD newSize;
+	newSize.X = scrBufferWidth;
+	newSize.Y = winHeight;
+
+	// set the new screen buffer dimensions
+	int Status = SetConsoleScreenBufferSize(hOut, newSize);
+	if (Status == 0)
+	{
+		cout << "SetConsoleScreenBufferSize() failed! Reason : " << GetLastError() << endl;
+		exit(Status);
+	}
+
+	// print the current screen buffer dimensions
+	GetConsoleScreenBufferInfo(hOut, &scrBufferInfo);
+	cout << "Screen Buffer Size : " << scrBufferInfo.dwSize.X << " x "
+		<< scrBufferInfo.dwSize.Y << endl;
+}
+
+void SetColor(int textColor, int backgroundColor) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (textColor + (backgroundColor * 16)));
+}
+
 // Dịch chuyển
 void GotoXY(int x, int y) {
 	COORD coord;
@@ -96,12 +139,15 @@ void ShowCur(bool CursorVisibility)
 	SetConsoleCursorInfo(handle, &ConCurInf);
 }
 void DrawLine(int x, int y, int width) {
+	/*GotoXY(x + 1, y);
+	Color(9);
+	for (int i = 1; i < width; i++) cout << char(205);*/
 	GotoXY(x + 1, y);
 	Color(9);
-	for (int i = 1; i < width; i++) cout << char(205);
+	for (int i = 1; i < width; i++) cout << char(219);
 }
 void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY = 0) {
-	GotoXY(x, y);
+	/*GotoXY(x, y);
 	Color(9);
 	char aa = char(219);
 	cout << char(201);
@@ -115,18 +161,37 @@ void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY
 		GotoXY(x + width, i); cout << char(186);
 	}
 	Color(7);
+	GotoXY(curPosX, curPosY);*/
+
+	GotoXY(x, y);
+	Color(9);
+	for (int i = 0; i <= width; i++) cout << char(219);
+	GotoXY(x, height + y);
+	for (int i = 0; i <= width; i++) cout << char(219);
+	for (int i = y + 1; i < height + y; i++) {
+		GotoXY(x, i); cout << char(219);
+		GotoXY(x + width, i); cout << char(219);
+	}
+	Color(7);
 	GotoXY(curPosX, curPosY);
 }
 void StartGame() {
 	system("cls");
 	ResetData();
 	fontsize(16, 16);
-	DrawBoard(75, 0, 30, HEIGH_CONSOLE);
+	/*DrawBoard(75, 0, 30, HEIGH_CONSOLE);
 	DrawLine(75, 8, 30);
 	DrawLine(75, 16, 30);
+	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);*/
+
+	DrawBoard(70, 0, 29, HEIGH_CONSOLE);
+	DrawBoard(0, HEIGH_CONSOLE, WIDTH_CONSOLE + 29, 9);
+	DrawLine(70, 10, 29);
 	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
 	GotoXY(77, 1);
 	cout << "Score:" << Score;
+	GotoXY(77, HEIGH_CONSOLE - 3);
+	cout << "LEVEL:" << LEVEL;
 	ShowCur(0);
 	STATE = 1;
 }
@@ -316,10 +381,11 @@ void ProcessSave() {
 	strcat_s(name, ".txt");
 	SaveData(name);
 }
-
 void main() {
+	//SetColor(0, 66);
 	int temp;
 	FixconsoleWindow();
+	RemoveScrollbar();
 	StartGame();
 	thread t1(ThreadFunc);
 	HANDLE handle_t1 = t1.native_handle();
