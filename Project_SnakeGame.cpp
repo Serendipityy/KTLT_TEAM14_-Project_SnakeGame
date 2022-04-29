@@ -108,7 +108,7 @@ void GenerateFood() {
 }
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, WIDTH_CONSOLE = 70,
-		HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0;
+		HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0; LEVEL = 1;
 	snake[0] = { 10, 5 }; snake[1] = { 11, 5 };
 	snake[2] = { 12, 5 }; snake[3] = { 13, 5 };
 	snake[4] = { 14, 5 }; snake[5] = { 15, 5 };
