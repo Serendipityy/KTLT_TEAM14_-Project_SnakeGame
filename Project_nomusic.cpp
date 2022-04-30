@@ -1,4 +1,4 @@
-﻿#include <windows.h> //for HWND
+#include <windows.h> //for HWND
 #include <iostream>
 #include <time.h> //for srand(time(NULL));
 #include <conio.h>//for getch()
@@ -85,7 +85,7 @@ void GenerateObstacle(int width, int height) {
 }
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, OBSTACLE_INDEX = 0,
-	WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
+		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
 	snake[0] = { 10, 5 }; snake[1] = { 11, 5 };
 	snake[2] = { 12, 5 }; snake[3] = { 13, 5 };
 	snake[4] = { 14, 5 }; snake[5] = { 15, 5 };
@@ -128,6 +128,106 @@ void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY
 	Color(7);
 	GotoXY(curPosX, curPosY);
 }
+void DrawTeam14() {
+	GotoXY(80, 1);
+	cout << "______";
+	GotoXY(80, 2);
+	cout << "|_   _|";
+	GotoXY(82, 3);
+	cout << "| |";
+	GotoXY(82, 4);
+	cout << "|_|";
+	GotoXY(87, 1);
+	cout << "_____";
+	GotoXY(87, 2);
+	cout << "| __|";
+	GotoXY(87, 3);
+	cout << "| `_";
+	GotoXY(87, 4);
+	cout << "|___,";
+	GotoXY(94, 1);
+	cout << "__";
+	GotoXY(94, 2);
+	cout << "/_\\";
+	GotoXY(93, 3);
+	cout << "/__ \\";
+	GotoXY(92, 4);
+	cout << "/_/ \\_\\";
+	GotoXY(99, 1);
+	cout << "___   ___";
+	GotoXY(99, 2);
+	cout << "|  \\_/  |";
+	GotoXY(99, 3);
+	cout << "| |\\_/| |";
+	GotoXY(99, 4);
+	cout << "|_|   |_|";
+	GotoXY(90, 6);
+	cout << "___";
+	GotoXY(90, 7);
+	cout << "| |";
+	GotoXY(90, 8);
+	cout << "| |";
+	GotoXY(90, 9);
+	cout << "|_|";
+	GotoXY(95, 6);
+	cout << "___";
+	GotoXY(95, 7);
+	cout << "/  |";
+	GotoXY(94, 8);
+	cout << "/_| |";
+	GotoXY(96, 9);
+	cout << "|_|";
+}
+void DrawSnakeGame() {
+	GotoXY(17, HEIGH_CONSOLE + 5);
+	cout << "__,";
+	GotoXY(17, HEIGH_CONSOLE + 6);
+	cout << "|_,";
+	GotoXY(17, HEIGH_CONSOLE + 7);
+	cout << "__/";
+	GotoXY(21, HEIGH_CONSOLE + 6);
+	cout << "||\\ |";
+	GotoXY(21, HEIGH_CONSOLE + 7);
+	cout << "|| \\|";
+	GotoXY(28, HEIGH_CONSOLE + 5);
+	cout << "__";
+	GotoXY(28, HEIGH_CONSOLE + 6);
+	cout << "/-\\";
+	GotoXY(27, HEIGH_CONSOLE + 7);
+	cout << "//`\\\\";
+	GotoXY(33, HEIGH_CONSOLE + 6);
+	cout << "||//";
+	GotoXY(33, HEIGH_CONSOLE + 7);
+	cout << "||\\\\";
+	GotoXY(38, HEIGH_CONSOLE + 5);
+	cout << "___,";
+	GotoXY(38, HEIGH_CONSOLE + 6);
+	cout << "|__";
+	GotoXY(38, HEIGH_CONSOLE + 7);
+	cout << "|__";
+	GotoXY(45, HEIGH_CONSOLE + 5);
+	cout << "____,";
+	GotoXY(45, HEIGH_CONSOLE + 6);
+	cout << "|| __";
+	GotoXY(45, HEIGH_CONSOLE + 7);
+	cout << "||_||";
+	GotoXY(52, HEIGH_CONSOLE + 5);
+	cout << "__";
+	GotoXY(52, HEIGH_CONSOLE + 6);
+	cout << "/-\\";
+	GotoXY(51, HEIGH_CONSOLE + 7);
+	cout << "//`\\\\";
+	GotoXY(57, HEIGH_CONSOLE + 6);
+	cout << "||\\/||";
+	GotoXY(57, HEIGH_CONSOLE + 7);
+	cout << "|| '||";
+	GotoXY(64, HEIGH_CONSOLE + 5);
+	cout << "___,";
+	GotoXY(64, HEIGH_CONSOLE + 6);
+	cout << "|__";
+	GotoXY(64, HEIGH_CONSOLE + 7);
+	cout << "|__";
+}
 void StartGame() {
 	system("cls");
 	ResetData();
@@ -136,7 +236,9 @@ void StartGame() {
 	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
 	DrawBoard(81, HEIGH_CONSOLE + 2, 29, 7);
 	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
-	GotoXY(87, 1);
+	DrawTeam14();
+	DrawSnakeGame();
+	GotoXY(87, HEIGH_CONSOLE - 5);
 	cout << "Score:" << Score;
 	GotoXY(87, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
@@ -182,7 +284,7 @@ void ProcessDead() {
 }
 void Eat() {
 	//PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
-	GotoXY(83, 1);
+	GotoXY(93, HEIGH_CONSOLE-5);
 	Score++;
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
@@ -250,13 +352,13 @@ bool SnakeTouchObstacle(int x, int y, int width, int height)
 {
 	if (x >= obstacle[OBSTACLE_INDEX - 1].x && x <= obstacle[OBSTACLE_INDEX - 1].x + width
 		&& y >= obstacle[OBSTACLE_INDEX - 1].y && y <= obstacle[OBSTACLE_INDEX - 1].y + height)
-		{
-			return true;
-		}
+	{
+		return true;
+	}
 	return false;
 }
 void MoveRight() {
-	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8|| (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
+	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
 		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 4, 4) == true) {
 		ProcessDead();
 	}
@@ -288,8 +390,8 @@ void MoveLeft() {
 	}
 }
 void MoveDown() {
-	if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true) 
-		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 4, 4) == true) { 
+	if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true)
+		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 4, 4) == true) {
 		ProcessDead();
 	}
 	else {
@@ -338,8 +440,8 @@ void ThreadFunc() {
 				MoveUp();
 				break;
 			}
-			DrawSnakeAndFood('0');
-			Sleep(200 / SPEED);
+			DrawSnakeAndFood('*');
+			Sleep(150 / SPEED);
 		}
 	}
 }
@@ -386,7 +488,6 @@ void ProcessSave() {
 	SaveData(name);
 }
 void main() {
-
 	int temp;
 	FixconsoleWindow();
 	StartGame();
