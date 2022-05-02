@@ -41,6 +41,10 @@ void FixconsoleWindow() {
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
+void setTextColor(int color)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 // Dịch chuyển
 void GotoXY(int x, int y) {
 	COORD coord;
@@ -129,53 +133,54 @@ void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY
 	GotoXY(curPosX, curPosY);
 }
 void DrawTeam14() {
-	GotoXY(80, 1);
+	setTextColor(14);
+	GotoXY(81, 1);
 	cout << "______";
-	GotoXY(80, 2);
+	GotoXY(81, 2);
 	cout << "|_   _|";
-	GotoXY(82, 3);
+	GotoXY(83, 3);
 	cout << "| |";
-	GotoXY(82, 4);
+	GotoXY(83, 4);
 	cout << "|_|";
-	GotoXY(87, 1);
+	GotoXY(88, 1);
 	cout << "_____";
-	GotoXY(87, 2);
+	GotoXY(88, 2);
 	cout << "| __|";
-	GotoXY(87, 3);
+	GotoXY(88, 3);
 	cout << "| `_";
-	GotoXY(87, 4);
+	GotoXY(88, 4);
 	cout << "|___,";
-	GotoXY(94, 1);
+	GotoXY(95, 1);
 	cout << "__";
-	GotoXY(94, 2);
+	GotoXY(95, 2);
 	cout << "/_\\";
-	GotoXY(93, 3);
+	GotoXY(94, 3);
 	cout << "/__ \\";
-	GotoXY(92, 4);
+	GotoXY(93, 4);
 	cout << "/_/ \\_\\";
-	GotoXY(99, 1);
+	GotoXY(100, 1);
 	cout << "___   ___";
-	GotoXY(99, 2);
+	GotoXY(100, 2);
 	cout << "|  \\_/  |";
-	GotoXY(99, 3);
+	GotoXY(100, 3);
 	cout << "| |\\_/| |";
-	GotoXY(99, 4);
+	GotoXY(100, 4);
 	cout << "|_|   |_|";
-	GotoXY(90, 6);
+	GotoXY(91, 6);
 	cout << "___";
-	GotoXY(90, 7);
+	GotoXY(91, 7);
 	cout << "| |";
-	GotoXY(90, 8);
+	GotoXY(91, 8);
 	cout << "| |";
-	GotoXY(90, 9);
+	GotoXY(91, 9);
 	cout << "|_|";
-	GotoXY(95, 6);
+	GotoXY(96, 6);
 	cout << "___";
-	GotoXY(95, 7);
+	GotoXY(96, 7);
 	cout << "/  |";
-	GotoXY(94, 8);
+	GotoXY(95, 8);
 	cout << "/_| |";
-	GotoXY(96, 9);
+	GotoXY(97, 9);
 	cout << "|_|";
 }
 void DrawSnakeGame() {
