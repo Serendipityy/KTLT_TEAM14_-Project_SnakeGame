@@ -133,7 +133,6 @@ void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY
 	GotoXY(curPosX, curPosY);
 }
 void DrawTeam14() {
-	setTextColor(14);
 	GotoXY(82, 1);
 	cout << "______";
 	GotoXY(82, 2);
