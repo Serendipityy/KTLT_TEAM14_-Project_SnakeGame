@@ -129,53 +129,53 @@ void DrawBoard(int x, int y, int width, int height, int curPosX = 0, int curPosY
 	GotoXY(curPosX, curPosY);
 }
 void DrawTeam14() {
-	GotoXY(82, 1);
+	GotoXY(80, 1);
 	cout << "______";
-	GotoXY(82, 2);
+	GotoXY(80, 2);
 	cout << "|_   _|";
-	GotoXY(84, 3);
+	GotoXY(82, 3);
 	cout << "| |";
-	GotoXY(84, 4);
+	GotoXY(82, 4);
 	cout << "|_|";
-	GotoXY(89, 1);
+	GotoXY(87, 1);
 	cout << "_____";
-	GotoXY(89, 2);
+	GotoXY(87, 2);
 	cout << "| __|";
-	GotoXY(89, 3);
+	GotoXY(87, 3);
 	cout << "| `_";
-	GotoXY(89, 4);
+	GotoXY(87, 4);
 	cout << "|___,";
-	GotoXY(96, 1);
+	GotoXY(94, 1);
 	cout << "__";
-	GotoXY(96, 2);
+	GotoXY(94, 2);
 	cout << "/_\\";
-	GotoXY(95, 3);
+	GotoXY(93, 3);
 	cout << "/__ \\";
-	GotoXY(94, 4);
+	GotoXY(92, 4);
 	cout << "/_/ \\_\\";
-	GotoXY(101, 1);
+	GotoXY(99, 1);
 	cout << "___   ___";
-	GotoXY(101, 2);
+	GotoXY(99, 2);
 	cout << "|  \\_/  |";
-	GotoXY(101, 3);
+	GotoXY(99, 3);
 	cout << "| |\\_/| |";
-	GotoXY(101, 4);
+	GotoXY(99, 4);
 	cout << "|_|   |_|";
-	GotoXY(92, 6);
+	GotoXY(90, 6);
 	cout << "___";
-	GotoXY(92, 7);
+	GotoXY(90, 7);
 	cout << "| |";
-	GotoXY(92, 8);
+	GotoXY(90, 8);
 	cout << "| |";
-	GotoXY(92, 9);
+	GotoXY(90, 9);
 	cout << "|_|";
-	GotoXY(97, 6);
+	GotoXY(95, 6);
 	cout << "___";
-	GotoXY(97, 7);
+	GotoXY(95, 7);
 	cout << "/  |";
-	GotoXY(96, 8);
+	GotoXY(94, 8);
 	cout << "/_| |";
-	GotoXY(98, 9);
+	GotoXY(96, 9);
 	cout << "|_|";
 }
 void DrawSnakeGame() {
@@ -232,9 +232,9 @@ void StartGame() {
 	system("cls");
 	ResetData();
 	fontsize(16, 16);
-	DrawBoard(81, 0, 29, HEIGH_CONSOLE);
+	DrawBoard(81, 0, 32, HEIGH_CONSOLE);
 	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
-	DrawBoard(81, HEIGH_CONSOLE + 2, 29, 7);
+	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
 	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
 	DrawTeam14();
 	DrawSnakeGame();
@@ -284,7 +284,7 @@ void ProcessDead() {
 }
 void Eat() {
 	//PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
-	GotoXY(93, HEIGH_CONSOLE-5);
+	GotoXY(93, HEIGH_CONSOLE - 5);
 	Score++;
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
