@@ -199,8 +199,6 @@ void Eat() {
 		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 	}
 	else {
-		GenerateGate(2, 2);
-		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 		Level(LEVEL);
 		GenerateFood();
 		FOOD_INDEX++;
