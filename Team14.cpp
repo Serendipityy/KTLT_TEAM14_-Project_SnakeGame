@@ -92,7 +92,7 @@ void StartGame() {
 	ResetData();
 	fontsize(16, 16);
 	// Vẽ khung
-	DrawBoard(81, 0, 30, HEIGH_CONSOLE);
+	DrawBoard(81, 0, 32, HEIGH_CONSOLE);
 	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
 	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
 	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
