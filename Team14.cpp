@@ -1,4 +1,4 @@
-﻿#include "nkea.h"
+#include "nkea.h"
 //constants
 #define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 8
@@ -45,12 +45,11 @@ bool IsValid(int x, int y) {
 }
 // Kiem tra vi tri chuong ngai vat 
 bool IsValidObstacle(int x, int y) {
-	for (int i = 0; i < SIZE_SNAKE; i++) {
+	for (int i = 0; i < SIZE_SNAKE; i++) 
 		if (snake[i].x >= x && snake[i].x <= x + 4
 			&& snake[i].y >= y && snake[i].y <= y + 4)
 			return false;
-		return true;
-	}
+	return true;
 }
 void GenerateObstacle(int width, int height) {
 	int x, y;
@@ -69,8 +68,8 @@ void GenerateFood() {
 	srand(time(NULL));
 	for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
-			x = 8 + rand() % (WIDTH_CONSOLE - 1) + 1;
-			y = rand() % (HEIGH_CONSOLE - 1) + 1;
+			x = rand() % (WIDTH_CONSOLE - 3) + 10;
+			y = rand() % (HEIGH_CONSOLE - 3) + 2;
 		} while (IsValid(x, y) == false
 			|| ((x >= obstacle[OBSTACLE_INDEX].x - 2)
 				&& (x <= obstacle[OBSTACLE_INDEX].x + 5)
@@ -327,9 +326,9 @@ void MoveUp() {
 		SIZE_SNAKE--;
 		if (SIZE_SNAKE == 0) {
 			//Clear gate;
-			ClearObstacle(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
+			ClearObstacle(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 3, 2);
 			//Level up
-			GotoXY(92, HEIGH_CONSOLE - 3);
+			GotoXY(93, HEIGH_CONSOLE - 3);
 			LEVEL++;
 			cout << LEVEL;
 			GATE_INDEX++;
