@@ -1,4 +1,4 @@
-﻿#include "nkea.h"
+#include "nkea.h"
 //constants
 #define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 8
@@ -475,7 +475,7 @@ void listFiles(const char* dirname) {
 void printlist(int begin, int end) {
 	for (int i = begin; i <= end; i++) {
 		GotoXY(x_filesave, y_filesave + (i - begin) * 2);
-		cout << setw(10) << file[i].name << setw(20) << file[i].level << setw(20) << file[i].score << setw(25) << file[i].timestr;
+		cout << setw(14) << file[i].name << setw(20) << file[i].level << setw(20) << file[i].score << setw(26) << file[i].timestr<<"  ";
 	}
 }
 void ProcessLoad() {
@@ -485,14 +485,14 @@ void ProcessLoad() {
 	//in cot 
 	setTextColor(15);
 	GotoXY(x_filesave, y_filesave - 2);
-	cout << setw(10) << "NAME" << setw(20) << "LEVEL" << setw(20) << "SCORE" << setw(25) << "DATE";
+	cout << setw(14) << "NAME" << setw(20) << "LEVEL" << setw(20) << "SCORE" << setw(26) << "DATE";
 	while (true)
 	{
 		setTextColor(15);
 		printlist(Cur_element - Cur_Choice, Cur_element - Cur_Choice + max_file_shown);
 		setTextColor(11);
 		GotoXY(x_filesave, y_filesave + Cur_Choice * 2);
-		cout << setw(10) << file[Cur_element].name << setw(20) << file[Cur_element].level << setw(20) << file[Cur_element].score << setw(25) << file[Cur_element].timestr;
+		cout << ">>" << setw(14) << file[Cur_element].name << setw(20) << file[Cur_element].level << setw(20) << file[Cur_element].score << setw(26) << file[Cur_element].timestr;
 		k = toupper(_getch());
 		if (k == 'W') {
 			Cur_element--;
@@ -535,7 +535,8 @@ void Menu()
 	int check = 0;
 	Draw_Board(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
 	//draw main menu board(left)
-	Draw_Board(x_menu, y_menu, main_menu_width, main_menu_height, 0, 0);
+	//Draw_Board(x_menu, y_menu, main_menu_width, main_menu_height, 0, 0);
+	Draw_menu_board();
 	setTextColor(15);
 	for (int i = 0; i < 5; i++) {
 		GotoXY(12 - pos_calc(menu_list[i]), y_menu + 3 + i * 4);
@@ -579,7 +580,6 @@ void Menu()
 				}
 				if (menu_choice == 1) {//LOAD GAME 
 					ProcessLoad();
-					return;
 				}
 				if (menu_choice == 2)//OPTION
 				{
@@ -589,7 +589,6 @@ void Menu()
 				{
 				}
 				//print high scoore - chua lam
-				cin.ignore();
 			}
 		}
 		if (menu_choice < 0)
