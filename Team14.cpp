@@ -1,4 +1,4 @@
-#include "nkea.h"
+﻿#include "nkea.h"
 //constants
 #define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 8
@@ -20,7 +20,7 @@ int MOVING;
 int SPEED;
 int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 int FOOD_INDEX;
-int OBSTACLE_INDEX;//chi so chuong ngai vat
+int OBSTACLE_INDEX; //chi so chuong ngai vat
 int GATE_INDEX;
 int SIZE_SNAKE;
 int STATE;
@@ -45,7 +45,7 @@ bool IsValid(int x, int y) {
 }
 // Kiem tra vi tri chuong ngai vat 
 bool IsValidObstacle(int x, int y) {
-	for (int i = 0; i < SIZE_SNAKE; i++) 
+	for (int i = 0; i < SIZE_SNAKE; i++)
 		if (snake[i].x >= x && snake[i].x <= x + 4
 			&& snake[i].y >= y && snake[i].y <= y + 4)
 			return false;
@@ -54,19 +54,19 @@ bool IsValidObstacle(int x, int y) {
 void GenerateObstacle(int width, int height) {
 	int x, y;
 	srand(time(NULL));
-	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+	//for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
 		do {
 			x = 8 + rand() % (WIDTH_CONSOLE - 1 - width) + 1;
 			y = rand() % (HEIGH_CONSOLE - 1 - height) + 1;
 		} while (IsValid(x, y) == false || IsValidObstacle(x, y) == false
 			|| abs(snake[SIZE_SNAKE - 1].x - x) < 3 || abs(snake[SIZE_SNAKE - 1].y - y) < 3);
-		obstacle[i] = { x,y };
-	}
+		obstacle[OBSTACLE_INDEX] = { x,y };
+	//}
 }
 void GenerateFood() {
 	int x, y;
 	srand(time(NULL));
-	for (int i = 0; i < MAX_SIZE_FOOD; i++) {
+	//for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 3) + 10;
 			y = rand() % (HEIGH_CONSOLE - 3) + 2;
@@ -75,8 +75,8 @@ void GenerateFood() {
 				&& (x <= obstacle[OBSTACLE_INDEX].x + 5)
 				&& (y >= obstacle[OBSTACLE_INDEX].y - 2)
 				&& (y <= obstacle[OBSTACLE_INDEX].y + 5)));
-		food[i] = { x,y };
-	}
+		food[FOOD_INDEX] = { x,y };
+	//}
 }
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, OBSTACLE_INDEX = 0, GATE_INDEX = 0,
@@ -95,10 +95,19 @@ void StartGame() {
 	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
 	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
 	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
+
+	setTextColor(2);
 	DrawSnake_Game();
+
+	setTextColor(13);
 	DrawSnake_Text();
+
+	setTextColor(14);
 	DrawTeam14();
+	DrawHowToPlay();
+
 	GotoXY(87, HEIGH_CONSOLE - 5);
+	setTextColor(7);
 	cout << "Score:" << Score;
 	GotoXY(87, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
@@ -163,6 +172,7 @@ void Level(int level_index) {
 	switch (level_index) {
 	case 1: {
 		//Draw Obstacle
+		OBSTACLE_INDEX++;
 		GenerateObstacle(4, 4);
 		DrawObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
 		if (OBSTACLE_INDEX >= 4) {
@@ -170,7 +180,7 @@ void Level(int level_index) {
 			if (SPEED == MAX_SPEED - 1) SPEED = 1;
 			SPEED++;
 		}
-		OBSTACLE_INDEX++;
+	
 		break;
 	}
 	}
@@ -179,7 +189,10 @@ void ProcessDead() {
 	STATE = 0;
 	//PlaySound(TEXT("oh no sound.wav"), NULL, SND_ASYNC);
 	GotoXY(0, HEIGH_CONSOLE + 2);
+	
 	printf("Dead, type y to continue or anykey to exit");
+	setTextColor(12);
+	DrawGameOver();
 }
 void Eat() {
 	//PlaySound(TEXT("eat sound.wav"), NULL, SND_ASYNC);
@@ -189,7 +202,7 @@ void Eat() {
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
 	//Clear obstacle
 	if (OBSTACLE_INDEX != 0)
-		ClearObstacle(obstacle[OBSTACLE_INDEX - 1].x, obstacle[OBSTACLE_INDEX - 1].y, 4, 4);
+		ClearObstacle(obstacle[OBSTACLE_INDEX ].x, obstacle[OBSTACLE_INDEX ].y, 4, 4);
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1)
 	{
 		FOOD_INDEX = -1;
@@ -199,8 +212,8 @@ void Eat() {
 	}
 	else {
 		Level(LEVEL);
-		GenerateFood();
 		FOOD_INDEX++;
+		GenerateFood();
 		SIZE_SNAKE++;
 	}
 }
@@ -424,7 +437,7 @@ vector<string> savename;
 int x_menu = 4, y_menu = 6, main_menu_width = 14, main_menu_height = 22, x_filesave = x_menu + 20,
 y_filesave = y_menu + 5;
 //so luong file hien thi tren man hinh
-int max_file_shown = 7;//0->7=8
+int max_file_shown = 5;//0->5=6
 //doc info in len man hinh
 save_info tempfile;
 void readinfo() {
@@ -489,7 +502,7 @@ void ProcessLoad() {
 			Cur_element++;
 			if (Cur_Choice < max_file_shown) Cur_Choice++;
 		}
-		if (k == '\r') {
+		if (k == '\r'||k == 'D' ) {
 			LoadData(file[Cur_element].name);
 			return;
 		}
@@ -523,12 +536,21 @@ void Menu()
 	Draw_Board(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
 	//draw main menu board(left)
 	Draw_Board(x_menu, y_menu, main_menu_width, main_menu_height, 0, 0);
+	setTextColor(15);
 	for (int i = 0; i < 5; i++) {
 		GotoXY(12 - pos_calc(menu_list[i]), y_menu + 3 + i * 4);
 		cout << menu_list[i];
 	}
 	//draw detail menu board (right)
 	Draw_Board(x_menu + 18, y_menu, WIDTH_CONSOLE - 26, HEIGH_CONSOLE - 7);
+	//divide detail table 
+	setTextColor(9);
+	GotoXY(x_filesave - 2, y_filesave + (6) * 2);
+	cout << char(204); 
+	GotoXY(x_filesave - 2 + WIDTH_CONSOLE - 26, y_filesave + (6) * 2);
+	cout << char(185);
+	GotoXY(x_filesave - 1, y_filesave + (6) * 2);
+	for (int i = 1; i < WIDTH_CONSOLE - 26; i++) cout << char(205);
 	while (menu_run == 1)
 	{
 		setTextColor(11);
@@ -548,8 +570,8 @@ void Menu()
 				cout << menu_list[menu_choice];
 				menu_choice++;
 			}
-			if (c == '\r') {
-				if (menu_choice == 4)//ẼXIT
+			if (c == '\r'||c == 'D') {
+				if (menu_choice == 4)//EXIT
 					exit(0);
 				if (menu_choice == 0) {//PLAY
 					ProcessStart();
@@ -577,8 +599,10 @@ void Menu()
 	}
 }
 void main() {
-	int temp;
+	setTextColor(10);
 	ShowCur(0);
+	Draw_Newgame_intro();
+	int temp;
 	FixconsoleWindow();
 	listFiles("save");
 	Menu();
