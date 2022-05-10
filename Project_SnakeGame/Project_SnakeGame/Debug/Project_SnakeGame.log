@@ -1,0 +1,8 @@
+﻿  Project_SnakeGame.cpp
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(38,2): warning C4091: 'typedef ': ignored on left of 'save_info' when no variable is declared
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(56,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(68,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(144,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(604,19): warning C4805: '==': unsafe mix of type 'int' and type 'bool' in operation
+D:\CODE C++\Project_SnakeGame\Project_SnakeGame\Project_SnakeGame.cpp(643,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Project_SnakeGame.vcxproj -> D:\CODE C++\Project_SnakeGame\Debug\Project_SnakeGame.exe
