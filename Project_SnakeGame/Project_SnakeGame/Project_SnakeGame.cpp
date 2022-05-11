@@ -2,13 +2,13 @@
 //constants
 #define MAX_SIZE_SNAKE 10
 #define MAX_SIZE_FOOD 8
-#define MAX_SIZE_OBSTACLE 8
+#define MAX_SIZE_OBSTACLE 5
 #define MAX_SIZE_GATE 5
 #define MAX_SPEED 3
 //GLOBAL variables
 POINT snake[40];
 POINT food[8];
-POINT obstacle[8];
+POINT obstacle[5];
 POINT gate[5];
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
@@ -20,7 +20,6 @@ int MOVING;
 int SPEED;
 int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 int FOOD_INDEX;
-int OBSTACLE_INDEX; //chi so chuong ngai vat
 int GATE_INDEX;
 int SIZE_SNAKE;
 int STATE;
@@ -43,25 +42,16 @@ bool IsValid(int x, int y) {
 			return false;
 	return true;
 }
-// Kiem tra vi tri chuong ngai vat 
-bool IsValidObstacle(int x, int y) {
-	for (int i = 0; i < SIZE_SNAKE; i++)
-		if (snake[i].x >= x && snake[i].x <= x + 4
-			&& snake[i].y >= y && snake[i].y <= y + 4)
-			return false;
-	return true;
-}
-void GenerateObstacle(int width, int height) {
-	int x, y;
-	srand(time(NULL));
-	//for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
-	do {
-		x = 8 + rand() % (WIDTH_CONSOLE - 1 - width) + 1;
-		y = rand() % (HEIGH_CONSOLE - 1 - height) + 1;
-	} while (IsValid(x, y) == false || IsValidObstacle(x, y) == false
-		|| abs(snake[SIZE_SNAKE - 1].x - x) < 3 || abs(snake[SIZE_SNAKE - 1].y - y) < 3);
-	obstacle[OBSTACLE_INDEX] = { x,y };
-	//}
+// Kiem tra vi tri thuc an co trung hoac ke sat chuong ngai vat khong
+bool Food_Obstacle(int x, int y, int width, int height) {
+	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+		if ((x >= obstacle[i].x - 2)
+			&& (x <= obstacle[i].x + width + 1)
+			&& (y >= obstacle[i].y - 2)
+			&& (y <= obstacle[i].y + height + 1))
+			return true;
+	}
+	return false;
 }
 void GenerateFood() {
 	int x, y;
@@ -70,20 +60,47 @@ void GenerateFood() {
 	do {
 		x = rand() % (WIDTH_CONSOLE - 3) + 10;
 		y = rand() % (HEIGH_CONSOLE - 3) + 2;
-	} while (IsValid(x, y) == false
-		|| ((x >= obstacle[OBSTACLE_INDEX].x - 2)
-			&& (x <= obstacle[OBSTACLE_INDEX].x + 5)
-			&& (y >= obstacle[OBSTACLE_INDEX].y - 2)
-			&& (y <= obstacle[OBSTACLE_INDEX].y + 5)));
+	} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == true);
 	food[FOOD_INDEX] = { x,y };
 	//}
 }
+void DrawObstacle(int x, int y, int width, int height) {
+	GotoXY(x, y);
+	for (int i = x; i < width + x; i++) {
+		for (int j = y; j <= height + y; j++) {
+			GotoXY(i, j); cout << char(219);
+		}
+	}
+}
+void ClearObstacle(int x, int y, int width, int height) {
+	GotoXY(x, y);
+	for (int i = x; i < width + x; i++) {
+		for (int j = y; j <= height + y; j++) {
+			GotoXY(i, j); printf("%c", ' ');
+		}
+	}
+}
+void Level(int level_index) {
+	switch (level_index) {
+	case 1: {
+		//Draw Obstacle
+		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+			setTextColor(8);
+			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
+		}
+		break;
+	}
+	}
+}
 void ResetData() {
-	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, OBSTACLE_INDEX = 0, GATE_INDEX = 0,
+	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, GATE_INDEX = 0,
 		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
 	snake[0] = { 10, 5 }; snake[1] = { 11, 5 };
 	snake[2] = { 12, 5 }; snake[3] = { 13, 5 };
 	snake[4] = { 14, 5 }; snake[5] = { 15, 5 };
+	obstacle[0] = { 18, 1 }; obstacle[1] = { 41, 1 };
+	obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8}; obstacle[4] = { 53, HEIGH_CONSOLE - 8};
+	Level(LEVEL);
 	GenerateFood();
 }
 void StartGame() {
@@ -123,22 +140,6 @@ void ExitGame() {
 void PauseGame(HANDLE t) {
 	SuspendThread(t);
 }
-void DrawObstacle(int x, int y, int width, int height) {
-	GotoXY(x, y);
-	for (int i = x; i < width + x; i++) {
-		for (int j = y; j <= height + y; j++) {
-			GotoXY(i, j); cout << char(219);
-		}
-	}
-}
-void ClearObstacle(int x, int y, int width, int height) {
-	GotoXY(x, y);
-	for (int i = x; i < width + x; i++) {
-		for (int j = y; j <= height + y; j++) {
-			GotoXY(i, j); printf("%c", ' ');
-		}
-	}
-}
 void GenerateGate(int width, int height) {
 	int x, y;
 	srand(time(NULL));
@@ -147,11 +148,7 @@ void GenerateGate(int width, int height) {
 			x = 8 + rand() % (WIDTH_CONSOLE - 1 - width) + 1;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
 		} while (IsValid(x, y) == false || abs(snake[SIZE_SNAKE - 1].x - x) < 3
-			|| abs(snake[SIZE_SNAKE - 1].y - y) < 3
-			|| ((x >= obstacle[OBSTACLE_INDEX].x - 1)
-				&& (x <= obstacle[OBSTACLE_INDEX].x + 4)
-				&& (y >= obstacle[OBSTACLE_INDEX].y - 1)
-				&& (y <= obstacle[OBSTACLE_INDEX].y + 4)));
+			|| abs(snake[SIZE_SNAKE - 1].y - y) < 3);
 		gate[i] = { x,y };
 	}
 }
@@ -168,24 +165,9 @@ void DrawGate(int x, int y, int width, int height) {
 		cout << char(219);
 	}
 }
-void Level(int level_index) {
-	switch (level_index) {
-	case 1: {
-		//Draw Obstacle
-		OBSTACLE_INDEX++;
-		GenerateObstacle(4, 4);
-		DrawObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
-		if (OBSTACLE_INDEX >= 4) {
-			//Increase speed
-			if (SPEED == MAX_SPEED - 1) SPEED = 1;
-			SPEED++;
-		}
-
-		break;
-	}
-	}
-}
 void ProcessDead() {
+	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++)
+		ClearObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
 	string death_option[3] = { " Play again "," Menu "," Exit " };
 	string death_option_[3] = { "  Play again  ","  Menu  ","  Exit  " };
 	STATE = 0;
@@ -242,18 +224,18 @@ void Eat() {
 	Score++;
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
-	//Clear obstacle
-	if (OBSTACLE_INDEX != 0)
-		ClearObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1)
 	{
 		FOOD_INDEX = -1;
-		//Create gate 
+		//Create Gate
+		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+			ClearObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
+			obstacle[i] = {};
+		}
 		GenerateGate(2, 2);
 		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 	}
 	else {
-		Level(LEVEL);
 		FOOD_INDEX++;
 		GenerateFood();
 		SIZE_SNAKE++;
@@ -298,10 +280,10 @@ bool SnakeTouchBody(int x, int y)
 }
 bool SnakeTouchObstacle(int x, int y, int width, int height)
 {
-	if (x >= obstacle[OBSTACLE_INDEX - 1].x && x < obstacle[OBSTACLE_INDEX - 1].x + width
-		&& y >= obstacle[OBSTACLE_INDEX - 1].y && y <= obstacle[OBSTACLE_INDEX - 1].y + height)
-	{
-		return true;
+	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+		if (x >= obstacle[i].x && x < obstacle[i].x + width
+			&& y >= obstacle[i].y && y <= obstacle[i].y + height)
+			return true;
 	}
 	return false;
 }
@@ -319,7 +301,7 @@ bool SnakeTouchGate(int x, int y, int width, int height) {
 }
 void MoveRight() {
 	if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
-		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 4, 4) == true
+		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
 		|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 		ProcessDead();
 	}
@@ -336,7 +318,7 @@ void MoveRight() {
 }
 void MoveLeft() {
 	if (snake[SIZE_SNAKE - 1].x - 1 == 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)
-		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 4, 4) == true
+		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
 		|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 		ProcessDead();
 	}
@@ -353,7 +335,7 @@ void MoveLeft() {
 }
 void MoveDown() {
 	if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true)
-		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 4, 4) == true
+		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 5, 7) == true
 		|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 		ProcessDead();
 	}
@@ -370,7 +352,7 @@ void MoveDown() {
 }
 void MoveUp() {
 	if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)
-		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1, 4, 4) == true
+		|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1, 5, 7) == true
 		|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 		ProcessDead();
 	}
