@@ -329,7 +329,7 @@ void Eat() {
 	//Clear obstacle
 	if (OBSTACLE_INDEX != 0)
 		ClearObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
-	if (FOOD_INDEX == MAX_SIZE_FOOD - 1 && LEVEL < 3)
+	if (FOOD_INDEX == MAX_SIZE_FOOD - 1 && LEVEL < 4)
 	{
 		FOOD_INDEX = -1;
 		//Create Gate
@@ -655,7 +655,7 @@ void MoveDown() {
 			snake[SIZE_SNAKE - 1].y++;
 		}
 	}
-	if (LEVEL == 2) {
+	if (LEVEL == 3) {
 		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE 
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
@@ -709,6 +709,16 @@ void MoveUp() {
 				Level(LEVEL);
 				Run();
 			}
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y--;
 		}
 	}
 	if (LEVEL == 2) {
