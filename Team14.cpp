@@ -184,6 +184,13 @@ void DrawObstacle(int x, int y, int width, int height) {
 }
 void DrawMapLv(int level_index) {
 	switch (level_index) {
+	case 2:
+		//Draw Obstacle
+		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+			setTextColor(8);
+			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
+		}
+		break;
 	case 3:
 		// Draw Obstacle
 		for (int i = 4; i < 8; i++) {
@@ -294,18 +301,6 @@ void ClearSnakeAndFood(char str) {
 void Level(int level_index) {
 	switch (level_index) {
 	case 1:
-		if (OBSTACLE_INDEX >= 1) {
-			//Increase speed
-			if (SPEED == MAX_SPEED - 1) SPEED = 1;
-			SPEED++;
-		}
-		break;
-	case 2:
-		//Draw Obstacle
-		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
-			setTextColor(8);
-			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
-		}
 		if (OBSTACLE_INDEX >= 1) {
 			//Increase speed
 			if (SPEED == MAX_SPEED - 1) SPEED = 1;
@@ -706,7 +701,10 @@ void MoveUp() {
 				//Level up
 				SIZE_SNAKE = 10;
 				LevelUp();
-				Level(LEVEL);
+				obstacle[0] = { 18, 1 }; obstacle[1] = { 41, 1 };
+				obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8 };
+				obstacle[4] = { 53, HEIGH_CONSOLE - 8 };
+				DrawMapLv(LEVEL);
 				Run();
 			}
 		}
@@ -768,38 +766,8 @@ void MoveUp() {
 				SIZE_SNAKE = 18;
 				LevelUp();
 				DrawMapLv(LEVEL);
-				if (LEVEL == 2) {
-		if (snake[SIZE_SNAKE - 1].y - 1 == 0 
-			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
-			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
-			ProcessDead();
-		}
-		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1) {
-			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
-			printf("%c", ' ');
-			SIZE_SNAKE--;
-			if (SIZE_SNAKE == 0) {
-				//Level up
-				SIZE_SNAKE = 18;
-				LevelUp();
-				DrawMapLv(LEVEL);
 				thread f(MoveSpider);
 				f.detach();
-				Run();
-			}
-		}
-		else {
-			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
-				Eat();
-			}
-			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
-				snake[i].x = snake[i + 1].x;
-				snake[i].y = snake[i + 1].y;
-			}
-			snake[SIZE_SNAKE - 1].y--;
-		}
-	}
 				Run();
 			}
 		}
