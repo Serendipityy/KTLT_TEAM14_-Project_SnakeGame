@@ -4,7 +4,7 @@
 #define MAX_SIZE_FOOD 4
 #define MAX_SIZE_OBSTACLE 8
 #define MAX_SIZE_GATE 5
-#define MAX_SPEED 3
+#define MAX_SPEED 2
 mutex m;
 //GLOBAL variables
 POINT snake[40];
@@ -15,10 +15,10 @@ int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
 2,1,1,2,0,4,6,4,
 2,1,1,2,0,4,7,5,
-2,1,1,2,0,4,8,5 };
+2,1,1,2,0,4,8,5 };	
 int CHAR_LOCK;
 int MOVING;
-int SPEED;
+int SPEED = 1;
 int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 int FOOD_INDEX;
 int OBSTACLE_INDEX; //chi so chuong ngai vat
@@ -208,7 +208,6 @@ void DrawMapLv(int level_index) {
 	case 2:
 		//Draw Obstacle
 		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
-			setTextColor(8);
 			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
 		}
 		if (OBSTACLE_INDEX >= 1) {
@@ -467,12 +466,12 @@ bool SnakeTouchGate(int x, int y, int width, int height) {
 	return false;
 }
 bool SnakeTouchSpider(int x, int y) {
-	bool flag = true;
+	bool flag = false;
 	if ((x == nhen_x && y == nhen_y - 2) || (x == nhen_x && y == nhen_y)
 		|| (x == nhen_x && y == nhen_y + 1) || (x == nhen_x + 1 && y == nhen_y + 1)
 		|| (x == nhen_x + 2 && y == nhen_y + 1) || (x == nhen_x + 2 && y == nhen_y)
 		|| (x == nhen_x + 2 && y == nhen_y - 2) || (x == nhen_x + 1 && y == nhen_y - 1)) {
-		flag == false;
+		flag == true;
 	}
 	return flag;
 }
@@ -485,7 +484,8 @@ void MoveSpider() {
 void MoveRight() {
 	if (LEVEL == 1) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
-			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2 == true
+			|| SnakeTouchSpider(snake[SIZE_SNAKE].x, snake[SIZE_SNAKE].y) == true)) {
 			ProcessDead();
 		}
 		else {
@@ -536,7 +536,7 @@ void MoveRight() {
 	}
 	if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
-			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true*/
+			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true ) {
 			ProcessDead();
 		}
@@ -607,7 +607,7 @@ void MoveLeft() {
 	}
 	if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].x - 1 == 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)
-			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true*/
+			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
@@ -781,7 +781,7 @@ void MoveUp() {
 	}
 	else if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)
-			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true*/
+			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
@@ -818,8 +818,8 @@ void ThreadFunc() {
 				break;
 			}
 			DrawSnakeAndFood('*');
-			Sleep(150 / SPEED);
-			if (LEVEL == 4) {
+			//Sleep(150 / SPEED);
+			//if (LEVEL == 4) {
 				MoveSpider();
 				Sleep(150);
 				m.lock();
@@ -836,7 +836,7 @@ void ThreadFunc() {
 				if (nhen_x == 68) {
 					nhen_x = 10;
 				}
-			}
+			//}
 		}
 	}
 }
@@ -941,7 +941,9 @@ void ProcessLoad() {
 	char k;
 	int Cur_Choice = 0, Cur_element = 0;
 	int num = file.size();
-	if (num < max_file_shown) max_file_shown=num-1;
+	if (num < max_file_shown) {
+		max_file_shown = num - 1;
+	}
 	//in cot 
 	setTextColor(15);
 	GotoXY(x_filesave, y_filesave - 2);
