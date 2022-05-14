@@ -941,6 +941,7 @@ void ProcessLoad() {
 	char k;
 	int Cur_Choice = 0, Cur_element = 0;
 	int num = file.size();
+	if (num < max_file_shown) max_file_shown=num-1;
 	//in cot 
 	setTextColor(15);
 	GotoXY(x_filesave, y_filesave - 2);
