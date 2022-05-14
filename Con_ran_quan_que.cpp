@@ -34,7 +34,7 @@ int ESC = 27;
 int back_to_menu = 0;
 char Name[10];
 // Thong so Spider
-int nhen_x = 20;
+int nhen_x = 50;
 int nhen_y = 10;
 // Thong tin file in ra phan load
 typedef struct save_info {
@@ -324,16 +324,9 @@ void ClearSnakeAndFood(char str) {
 	}
 }
 
-void Ghim(int index_level) {
-	if (index_level <= 3) {
-		for (int i = 0; i < SIZE_SNAKE; i++) {
-			snake[i] = { 10 + i,10 };
-		}
-	}
-	else {
-		for (int i = 0; i < SIZE_SNAKE; i++) {
-			snake[i] = { 10 + i,4 };
-		}
+void Ghim() {
+	for (int i = 0; i < SIZE_SNAKE; i++) {
+		snake[i] = { 10 + i,10 };
 	}
 	MOVING = 'D';
 	CHAR_LOCK = 'A';
@@ -405,7 +398,7 @@ void LevelUp(int level_index) {
 		obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8 };
 		obstacle[4] = { 53, HEIGH_CONSOLE - 8 };
 	}
-	Ghim(LEVEL);
+	Ghim();
 	DrawMapLv(LEVEL);
 }
 /*Rắn chạm*/
@@ -492,103 +485,194 @@ void MoveSpider() {
 void MoveRight() {
 	if (LEVEL == 1) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
-			|| (SIZE_SNAKE == 10 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x + 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x++;
 		}
 	}
 	if (LEVEL == 2) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
-			|| (SIZE_SNAKE == 14 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x + 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x++;
 		}
 	}
 	if (LEVEL == 3) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-			|| (SIZE_SNAKE == 18 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x + 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x++;
 		}
 	}
 	if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true)
-			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
-			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
+			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true*/
+			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true ) {
 			ProcessDead();
 		}
-	}
-	else {
-		if (snake[SIZE_SNAKE - 1].x + 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
-			Eat();
+		else {
+			if (snake[SIZE_SNAKE - 1].x + 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x++;
 		}
-		for (int i = 0; i < SIZE_SNAKE - 1; i++) {
-			snake[i].x = snake[i + 1].x;
-			snake[i].y = snake[i + 1].y;
-		}
-		snake[SIZE_SNAKE - 1].x++;
 	}
+
 }
 void MoveLeft() {
 	if (LEVEL == 1) {
 		if (snake[SIZE_SNAKE - 1].x - 1 == 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)
-			|| (SIZE_SNAKE == 10 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x - 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x--;
 		}
 	}
 	if (LEVEL == 2) {
 		if (snake[SIZE_SNAKE - 1].x - 1 == 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
-			|| (SIZE_SNAKE == 14 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x - 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x--;
 		}
 	}
 	if (LEVEL == 3) {
 		if (snake[SIZE_SNAKE - 1].x - 1 == 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-			|| (SIZE_SNAKE == 18 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x - 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x--;
 		}
 	}
 	if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].x - 1 == 8 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true)
-			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
+			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true*/
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
-	}
-	else {
-		if (snake[SIZE_SNAKE - 1].x - 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
-			Eat();
+		else {
+			if (snake[SIZE_SNAKE - 1].x - 1 == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].x--;
 		}
-		for (int i = 0; i < SIZE_SNAKE - 1; i++) {
-			snake[i].x = snake[i + 1].x;
-			snake[i].y = snake[i + 1].y;
-		}
-		snake[SIZE_SNAKE - 1].x--;
 	}
 }
 void MoveDown() {
 	if (LEVEL == 1) {
 		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true)
-			|| (SIZE_SNAKE == 10 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y + 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y++;
 		}
 	}
 	if (LEVEL == 2) {
 		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true)
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 5, 7) == true
-			|| (SIZE_SNAKE == 14 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y + 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y++;
 		}
 	}
 	if (LEVEL == 3) {
 		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-			|| (SIZE_SNAKE == 18 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 			ProcessDead();
+		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y + 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y++;
 		}
 	}
 	if (LEVEL == 4) {
@@ -597,25 +681,25 @@ void MoveDown() {
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
-	}
-	else {
-		if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y + 1 == food[FOOD_INDEX].y) {
-			Eat();
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y + 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y++;
 		}
-		for (int i = 0; i < SIZE_SNAKE - 1; i++) {
-			snake[i].x = snake[i + 1].x;
-			snake[i].y = snake[i + 1].y;
-		}
-		snake[SIZE_SNAKE - 1].y++;
 	}
 }
 void MoveUp() {
 	if (LEVEL == 1) {
 		if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)
-			|| (SIZE_SNAKE == 10 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
-		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1) {
+		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1 && FOOD_INDEX == -1) {
 			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
 			printf("%c", ' ');
 			SIZE_SNAKE--;
@@ -625,14 +709,24 @@ void MoveUp() {
 				LevelUp(LEVEL);
 			}
 		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y--;
+		}
 	}
-	if (LEVEL == 2) {
+	else if (LEVEL == 2) {
 		if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1, 5, 7) == true
-			|| (SIZE_SNAKE == 14 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
-		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1) {
+		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1 && FOOD_INDEX == -1) {
 			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
 			printf("%c", ' ');
 			SIZE_SNAKE--;
@@ -644,15 +738,25 @@ void MoveUp() {
 				LevelUp(LEVEL);
 			}
 		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y--;
+		}
 	}
-	if (LEVEL == 3) {
+	else if (LEVEL == 3) {
 		if (snake[SIZE_SNAKE - 1].y - 1 == 0
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
 			|| SnakeTouch_Lv3(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-			|| (SIZE_SNAKE == 18 && SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true)) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
-		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1) {
+		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1 && FOOD_INDEX == -1) {
 			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
 			printf("%c", ' ');
 			SIZE_SNAKE--;
@@ -660,28 +764,39 @@ void MoveUp() {
 				//Level up
 				SIZE_SNAKE = 18;
 				LevelUp(LEVEL);
+				//thread f(MoveSpider);
+				//f.detach();
 			}
 		}
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y--;
+		}
 	}
-	if (LEVEL == 4) {
+	else if (LEVEL == 4) {
 		if (snake[SIZE_SNAKE - 1].y - 1 == 0 || (SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true)
-			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
+			/*|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true*/
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
-	}
-	else {
-		if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
-			Eat();
+		else {
+			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
+				Eat();
+			}
+			for (int i = 0; i < SIZE_SNAKE - 1; i++) {
+				snake[i].x = snake[i + 1].x;
+				snake[i].y = snake[i + 1].y;
+			}
+			snake[SIZE_SNAKE - 1].y--;
 		}
-		for (int i = 0; i < SIZE_SNAKE - 1; i++) {
-			snake[i].x = snake[i + 1].x;
-			snake[i].y = snake[i + 1].y;
-		}
-		snake[SIZE_SNAKE - 1].y--;
 	}
 }
-
 // Thread
 void ThreadFunc() {
 	while (back_to_menu == 0) {
@@ -706,7 +821,7 @@ void ThreadFunc() {
 			Sleep(150 / SPEED);
 			if (LEVEL == 4) {
 				MoveSpider();
-				Sleep(150 / SPEED);
+				Sleep(150);
 				m.lock();
 				GotoXY(nhen_x + 2, nhen_y - 2);
 				cout << "     ";
