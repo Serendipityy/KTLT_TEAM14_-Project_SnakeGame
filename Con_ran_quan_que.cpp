@@ -2,14 +2,14 @@
 //constants
 #define MAX_SIZE_SNAKE 30
 #define MAX_SIZE_FOOD 4
-#define MAX_SIZE_OBSTACLE 5
+#define MAX_SIZE_OBSTACLE 8
 #define MAX_SIZE_GATE 5
 #define MAX_SPEED 2
 mutex m;
 //GLOBAL variables
 POINT snake[40];
 POINT food[8];
-POINT obstacle[5];
+POINT obstacle[8];
 POINT gate[5];
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
@@ -21,6 +21,7 @@ int MOVING;
 int SPEED = 1;
 int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 int FOOD_INDEX;
+int OBSTACLE_INDEX; //chi so chuong ngai vat
 int GATE_INDEX;
 int SIZE_SNAKE;
 int STATE;
@@ -97,10 +98,10 @@ void GenerateFood(int level_index) {
 			x = 8 + rand() % (WIDTH_CONSOLE - 1) + 1;
 			y = rand() % (HEIGH_CONSOLE - 1) + 1;
 		} while (IsValid(x, y) == false
-			|| (x >= 40 && x <= 46 && y >= 4 && y <= 8)
-			|| (x >= 40 && x <= 46 && y >= 12 && y <= 16)
-			|| (x >= 30 && x <= 40 && y >= 8 && y <= 12)
-			|| (x >= 46 && x <= 56 && y >= 8 && y <= 12));
+			|| (x != 40 && x != 46 && y < 4 && y > 8)
+			|| (x != 40 && x != 46 && y < 12 && y > 16)
+			|| (x < 30 && x > 40 && y >= 8 && y <= 12)
+			|| (x < 46 && x > 56 && y != 8 && y != 12));
 		food[FOOD_INDEX] = { x,y };
 		//}
 	}
@@ -111,8 +112,10 @@ void GenerateFood(int level_index) {
 			x = 8 + rand() % (WIDTH_CONSOLE - 1) + 1;
 			y = rand() % (HEIGH_CONSOLE - 1) + 1;
 		} while (IsValid(x, y) == false
-			|| (x >= 40 && x <= 86 && y > 4 && y < 6)
-			|| (x >= 40 && x <= 86 && y > 22 && y < 24));
+			|| (x < 23 && x > 35 && y == 5) || (x < 40 && x > 68 && y == 5)
+			|| (x < 23 && x > 35 && y == 15)|| (x < 40 && x > 68 && y == 15)
+			|| (x != 15 && y != 2) || (x != 71 && y != 2)
+			|| (x != 15 && y != 18) || (x != 71 && y != 18));
 		food[FOOD_INDEX] = { x,y };
 		//}
 	}
@@ -203,7 +206,7 @@ void DrawObstacle(int x, int y, int width, int height) {
 void DrawMapLv(int level_index) {
 	switch (level_index) {
 	case 1:
-		if (FOOD_INDEX >= 1) {
+		if (OBSTACLE_INDEX >= 1) {
 			//Increase speed
 			if (SPEED == MAX_SPEED - 1) SPEED = 1;
 			SPEED++;
@@ -213,6 +216,11 @@ void DrawMapLv(int level_index) {
 		//Draw Obstacle
 		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
 			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
+		}
+		if (OBSTACLE_INDEX >= 1) {
+			//Increase speed
+			if (SPEED == MAX_SPEED - 1) SPEED = 1;
+			SPEED++;
 		}
 		break;
 	case 3:
@@ -341,10 +349,17 @@ void Eat() {
 	Score++;
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
+	//Clear obstacle
+	if (OBSTACLE_INDEX != 0)
+		ClearObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1 && LEVEL < 4)
 	{
 		FOOD_INDEX = -1;
 		//Create Gate
+		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+			ClearObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
+			obstacle[i] = {};
+		}
 		GenerateGate(2, 2);
 		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 	}
@@ -824,7 +839,7 @@ void ThreadFunc() {
 			Sleep(150 / SPEED);
 			if (LEVEL == 4) {
 				MoveSpider();
-				Sleep(150);
+				Sleep(10);
 				m.lock();
 				GotoXY(nhen_x + 2, nhen_y - 2);
 				cout << "     ";
