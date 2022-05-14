@@ -1,4 +1,4 @@
-﻿#include "nkea.h"
+#include "nkea.h"
 //constants
 #define MAX_SIZE_SNAKE 30
 #define MAX_SIZE_FOOD 4
@@ -708,7 +708,10 @@ void MoveUp() {
 				//Level up
 				SIZE_SNAKE = 10;
 				LevelUp();
-				Level(LEVEL);
+				obstacle[0] = { 18, 1 }; obstacle[1] = { 41, 1 };
+				obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8 };
+				obstacle[4] = { 53, HEIGH_CONSOLE - 8 };
+				DrawMapLv(LEVEL);
 				Run();
 			}
 		}
@@ -837,8 +840,7 @@ void MoveUp() {
 }
 // Thread
 void ThreadFunc() {
-	if (back_to_menu==0) {
-		while (1) {
+	while (back_to_menu==0) {
 			if (STATE == 1)
 			{
 				ClearSnakeAndFood(' ');
@@ -860,7 +862,6 @@ void ThreadFunc() {
 				Sleep(150 / SPEED);
 			}
 		}
-	}
 }
 //overload 
 istream& operator >> (istream& in, POINT& a)
@@ -959,6 +960,13 @@ void printlist(int begin, int end) {
 		cout << setw(14) << file[i].name << setw(20) << file[i].level << setw(20) << file[i].score << setw(26) << file[i].timestr << "  ";
 	}
 }
+void Delete_detail_board() {
+	string blank = "                                                                                   ";
+	for (int i = 0; i < 15; i++) {
+		GotoXY(x_filesave, y_filesave - 4 + i);
+		cout << blank;
+	}
+}
 void ProcessLoad() {
 	char k;
 	int Cur_Choice = 0, Cur_element = 0;
@@ -988,6 +996,7 @@ void ProcessLoad() {
 			return;
 		}
 		if (k == ESC || k == 'A') {
+			Delete_detail_board();
 			return;
 		}
 		if (Cur_element < 0) {
@@ -1001,13 +1010,7 @@ void ProcessLoad() {
 	}
 	return;
 }
-void Delete_detail_board() {
-	string blank = "                                                                                   ";
-	for (int i = 0; i < 15; i++) {
-		GotoXY(x_filesave, y_filesave - 4 + i);
-		cout << blank;
-	}
-}
+
 // menu stuff
 string menu_list[5] = { "PLAY","LOAD GAME","OPTION","HIGH SCORE","EXIT" };
 int menu_list_element_count;
@@ -1109,7 +1112,6 @@ void ProcessStart() {
 }
 void Menu()
 {
-	back_to_menu = 0;
 	int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 	//PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
 	int menu_choice = 0;
@@ -1229,6 +1231,7 @@ void Run() {
 	int temp;
 	thread t(ThreadFunc);
 	HANDLE handle_t = t.native_handle();
+	back_to_menu = 0;
 	while (1) {
 		temp = toupper(_getch());
 		if (STATE == 1) {
@@ -1261,7 +1264,9 @@ void Run() {
 		else {
 			DeadOption();
 			if (back_to_menu == 1) {
+				
 				t.detach();
+				//TerminateThread(handle_t, 0);
 				return;
 			}
 		}
