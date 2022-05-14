@@ -818,8 +818,8 @@ void ThreadFunc() {
 				break;
 			}
 			DrawSnakeAndFood('*');
-			//Sleep(150 / SPEED);
-			//if (LEVEL == 4) {
+			Sleep(150 / SPEED);
+			if (LEVEL == 4) {
 				MoveSpider();
 				Sleep(150);
 				m.lock();
@@ -836,7 +836,7 @@ void ThreadFunc() {
 				if (nhen_x == 68) {
 					nhen_x = 10;
 				}
-			//}
+			}
 		}
 	}
 }
