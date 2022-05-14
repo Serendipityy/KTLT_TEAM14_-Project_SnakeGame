@@ -214,11 +214,6 @@ void DrawMapLv(int level_index) {
 		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
 			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
 		}
-		if (OBSTACLE_INDEX >= 1) {
-			//Increase speed
-			if (SPEED == MAX_SPEED - 1) SPEED = 1;
-			SPEED++;
-		}
 		break;
 	case 3:
 		// Draw Obstacle
