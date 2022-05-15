@@ -1,27 +1,26 @@
-﻿#include "nkea.h"
+#include "nkea.h"
 //constants
-#define MAX_SIZE_SNAKE 30
+#define MAX_SIZE_SNAKE 40
 #define MAX_SIZE_FOOD 4
-#define MAX_SIZE_OBSTACLE 8
+#define MAX_SIZE_OBSTACLE 5
 #define MAX_SIZE_GATE 5
 #define MAX_SPEED 2
 mutex m;
 //GLOBAL variables
 POINT snake[40];
-POINT food[8];
-POINT obstacle[8];
+POINT food[4];
+POINT obstacle[5];
 POINT gate[5];
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
 2,1,1,2,0,4,6,4,
 2,1,1,2,0,4,7,5,
-2,1,1,2,0,4,8,5 };	
+2,1,1,2,0,4,8,5 };
 int CHAR_LOCK;
 int MOVING;
 int SPEED = 1;
 int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
 int FOOD_INDEX;
-int OBSTACLE_INDEX; //chi so chuong ngai vat
 int GATE_INDEX;
 int SIZE_SNAKE;
 int STATE;
@@ -51,13 +50,12 @@ bool IsValid(int x, int y) {
 }
 // Kiem tra vi tri chuong ngai vat 
 bool Food_Obstacle(int x, int y, int width, int height) {
-	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
+	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) 
 		if ((x >= obstacle[i].x - 2)
 			&& (x <= obstacle[i].x + width + 1)
 			&& (y >= obstacle[i].y - 2)
 			&& (y <= obstacle[i].y + height + 1))
 			return true;
-	}
 	return false;
 }
 //Cong khong trung chuong ngai vat level 1
@@ -73,79 +71,66 @@ void GenerateFood(int level_index) {
 	int x, y;
 	if (level_index == 1) {
 		srand(time(NULL));
-		//for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 3) + 10;
 			y = rand() % (HEIGH_CONSOLE - 3) + 2;
 		} while (IsValid(x, y) == false);
 		food[FOOD_INDEX] = { x,y };
-		//}
 	}
 	if (level_index == 2) {
 		srand(time(NULL));
-		//for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 3) + 10;
 			y = rand() % (HEIGH_CONSOLE - 3) + 2;
 		} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == true);
 		food[FOOD_INDEX] = { x,y };
-		//}
 	}
 	if (level_index == 3) {
 		srand(time(NULL));
-		//for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
-			x = 8 + rand() % (WIDTH_CONSOLE - 1) + 1;
-			y = rand() % (HEIGH_CONSOLE - 1) + 1;
+			x = rand() % (WIDTH_CONSOLE - 3) + 10;
+			y = rand() % (HEIGH_CONSOLE - 3) + 2;
 		} while (IsValid(x, y) == false
 			|| (x != 40 && x != 46 && y < 4 && y > 8)
 			|| (x != 40 && x != 46 && y < 12 && y > 16)
 			|| (x < 30 && x > 40 && y >= 8 && y <= 12)
 			|| (x < 46 && x > 56 && y != 8 && y != 12));
 		food[FOOD_INDEX] = { x,y };
-		//}
 	}
 	if (level_index == 4) {
 		srand(time(NULL));
-		//for (int i = 0; i < MAX_SIZE_FOOD; i++) {
 		do {
-			x = 8 + rand() % (WIDTH_CONSOLE - 1) + 1;
-			y = rand() % (HEIGH_CONSOLE - 1) + 1;
+			x = rand() % (WIDTH_CONSOLE - 3) + 10;
+			y = rand() % (HEIGH_CONSOLE - 3) + 2;
 		} while (IsValid(x, y) == false
 			|| (x < 23 && x > 35 && y == 5) || (x < 40 && x > 68 && y == 5)
-			|| (x < 23 && x > 35 && y == 15)|| (x < 40 && x > 68 && y == 15)
+			|| (x < 23 && x > 35 && y == 15) || (x < 40 && x > 68 && y == 15)
 			|| (x != 15 && y != 2) || (x != 71 && y != 2)
 			|| (x != 15 && y != 18) || (x != 71 && y != 18));
 		food[FOOD_INDEX] = { x,y };
-		//}
 	}
 }
 void GenerateGate(int width, int height) {
 	int x, y;
 	srand(time(NULL));
-	//for (int i = 0; i < MAX_SIZE_GATE; i++) {
 	do {
 		x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 		y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-	} while (IsValid(x, y) == false || (abs(snake[SIZE_SNAKE - 1].x - x) < 3 && snake[SIZE_SNAKE - 1].y >= y && snake[SIZE_SNAKE - 1].y <= y + 3)
+	} while ((abs(snake[SIZE_SNAKE - 1].x - x) < 3 && snake[SIZE_SNAKE - 1].y >= y && snake[SIZE_SNAKE - 1].y <= y + 3)
 		|| (abs(snake[SIZE_SNAKE - 1].y - y) < 3 && snake[SIZE_SNAKE - 1].x >= x && snake[SIZE_SNAKE - 1].x <= x + 3)
 		|| Gate_Obstacle(x, y) == false);
 	gate[GATE_INDEX] = { x,y };
-	//}
 	if (LEVEL == 3) {
-		//for (int i = 0; i < MAX_SIZE_GATE; i++) {
 		do {
-			x = 8 + rand() % (WIDTH_CONSOLE - 1 - width) + 1;
+			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (IsValid(x, y) == false || abs(snake[SIZE_SNAKE - 1].x - x) < 3
+		} while (abs(snake[SIZE_SNAKE - 1].x - x) < 3
 			|| abs(snake[SIZE_SNAKE - 1].y - y) < 3
 			|| (x < 40 && x > 56 && y < 8 && y > 16));
 		gate[GATE_INDEX] = { x,y };
-		//}
 	}
 }
 // Chuc nang 
-
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, GATE_INDEX = 0,
 		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
@@ -206,8 +191,8 @@ void DrawObstacle(int x, int y, int width, int height) {
 void DrawMapLv(int level_index) {
 	switch (level_index) {
 	case 1:
-		if (OBSTACLE_INDEX >= 1) {
-			//Increase speed
+		if (FOOD_INDEX >= 1) {
+			//increase speed
 			if (SPEED == MAX_SPEED - 1) SPEED = 1;
 			SPEED++;
 		}
@@ -216,11 +201,6 @@ void DrawMapLv(int level_index) {
 		//Draw Obstacle
 		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
 			DrawObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
-		}
-		if (OBSTACLE_INDEX >= 1) {
-			//Increase speed
-			if (SPEED == MAX_SPEED - 1) SPEED = 1;
-			SPEED++;
 		}
 		break;
 	case 3:
@@ -305,8 +285,10 @@ void DrawGate(int x, int y, int width, int height) {
 	}
 }
 void DrawSnakeAndFood(char str) {
-	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
-	printf("%c", str);
+	if (FOOD_INDEX != -1) {
+		GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
+		printf("%c", str);
+	}
 	for (int i = 0; i < SIZE_SNAKE; i++) {
 		GotoXY(snake[i].x, snake[i].y);
 		printf("%d", MSSV[SIZE_SNAKE - 1 - i]);
@@ -349,17 +331,10 @@ void Eat() {
 	Score++;
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
-	//Clear obstacle
-	if (OBSTACLE_INDEX != 0)
-		ClearObstacle(obstacle[OBSTACLE_INDEX].x, obstacle[OBSTACLE_INDEX].y, 4, 4);
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1 && LEVEL < 4)
 	{
 		FOOD_INDEX = -1;
 		//Create Gate
-		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
-			ClearObstacle(obstacle[i].x, obstacle[i].y, 5, 7);
-			obstacle[i] = {};
-		}
 		GenerateGate(2, 2);
 		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 	}
@@ -490,7 +465,7 @@ void MoveSpider() {
 }
 void MoveRight() {
 	if (LEVEL == 1) {
-		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 
+		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2 == true)) {
 			ProcessDead();
@@ -507,7 +482,7 @@ void MoveRight() {
 		}
 	}
 	if (LEVEL == 2) {
-		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 
+		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
@@ -543,10 +518,10 @@ void MoveRight() {
 		}
 	}
 	if (LEVEL == 4) {
-		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8 
+		if (snake[SIZE_SNAKE - 1].x + 1 == WIDTH_CONSOLE + 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
-			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true ) {
+			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
 			ProcessDead();
 		}
 		else {
@@ -564,7 +539,7 @@ void MoveRight() {
 }
 void MoveLeft() {
 	if (LEVEL == 1) {
-		if (snake[SIZE_SNAKE - 1].x - 1 == 8 
+		if (snake[SIZE_SNAKE - 1].x - 1 == 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
@@ -581,7 +556,7 @@ void MoveLeft() {
 		}
 	}
 	if (LEVEL == 2) {
-		if (snake[SIZE_SNAKE - 1].x - 1 == 8 
+		if (snake[SIZE_SNAKE - 1].x - 1 == 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 5, 7) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
@@ -617,7 +592,7 @@ void MoveLeft() {
 		}
 	}
 	if (LEVEL == 4) {
-		if (snake[SIZE_SNAKE - 1].x - 1 == 8 
+		if (snake[SIZE_SNAKE - 1].x - 1 == 8
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
@@ -637,7 +612,7 @@ void MoveLeft() {
 }
 void MoveDown() {
 	if (LEVEL == 1) {
-		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE 
+		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 			ProcessDead();
@@ -654,7 +629,7 @@ void MoveDown() {
 		}
 	}
 	if (LEVEL == 2) {
-		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE 
+		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 5, 7) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
@@ -690,7 +665,7 @@ void MoveDown() {
 		}
 	}
 	if (LEVEL == 4) {
-		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE 
+		if (snake[SIZE_SNAKE - 1].y + 1 == HEIGH_CONSOLE
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
@@ -710,7 +685,7 @@ void MoveDown() {
 }
 void MoveUp() {
 	if (LEVEL == 1) {
-		if (snake[SIZE_SNAKE - 1].y - 1 == 0 
+		if (snake[SIZE_SNAKE - 1].y - 1 == 0
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
@@ -737,7 +712,7 @@ void MoveUp() {
 		}
 	}
 	else if (LEVEL == 2) {
-		if (snake[SIZE_SNAKE - 1].y - 1 == 0 
+		if (snake[SIZE_SNAKE - 1].y - 1 == 0
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
 			|| SnakeTouchObstacle(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1, 5, 7) == true
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
@@ -748,8 +723,6 @@ void MoveUp() {
 			printf("%c", ' ');
 			SIZE_SNAKE--;
 			if (SIZE_SNAKE == 0) {
-				//Clear gate;
-				ClearObstacle(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 				//Level up
 				SIZE_SNAKE = 14;
 				LevelUp(LEVEL);
@@ -797,7 +770,7 @@ void MoveUp() {
 		}
 	}
 	else if (LEVEL == 4) {
-		if (snake[SIZE_SNAKE - 1].y - 1 == 0 
+		if (snake[SIZE_SNAKE - 1].y - 1 == 0
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true) {
