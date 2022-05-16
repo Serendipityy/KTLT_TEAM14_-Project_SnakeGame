@@ -184,7 +184,7 @@ void GenerateGate(int width, int height) {
 //Chức năng
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, GATE_INDEX = 0,
-		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
+		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1, nhen_x = 50;
 	snake[0] = { 10, 10 }; snake[1] = { 11, 10 };
 	snake[2] = { 12, 10 }; snake[3] = { 13, 10 };
 	snake[4] = { 14, 10 }; snake[5] = { 15, 10 };
