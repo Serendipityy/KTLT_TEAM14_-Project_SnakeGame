@@ -1,0 +1,17 @@
+﻿  Source.cpp
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(45,2): warning C4091: 'typedef ': ignored on left of 'save_info' when no variable is declared
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(126,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(134,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(142,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(158,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(172,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(531,79): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(1013,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(1241,19): warning C4805: '==': unsafe mix of type 'int' and type 'bool' in operation
+D:\CODE C++\SnakeGame\snake_game\snake_game\Source.cpp(1384,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  deadart.cpp
+  intro.cpp
+  sol.cpp
+D:\CODE C++\SnakeGame\snake_game\snake_game\sol.cpp(211,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  snake_game.vcxproj -> D:\CODE C++\SnakeGame\snake_game\x64\Debug\snake_game.exe
