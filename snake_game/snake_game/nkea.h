@@ -51,3 +51,6 @@ bool DrawSpider();
 void Run();
 void DrawMapLv(int level_index);
 void Start();
+void DrawSnakeAndFood(char str);
+void ClearSnakeAndFood(char str);
+void Draw_endgame();
