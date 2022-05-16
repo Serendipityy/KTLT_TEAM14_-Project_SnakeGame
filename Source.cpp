@@ -104,12 +104,12 @@ bool IsValid(int x, int y) {
 // Kiem tra vi tri chuong ngai vat 
 bool Food_Obstacle(int x, int y, int width, int height) {
 	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++)
-		if ((x >= obstacle[i].x - 1)
+		if ((x >= obstacle[i].x - 2)
 			&& (x <= obstacle[i].x + width + 1)
-			&& (y >= obstacle[i].y - 1)
-			&& (y <= obstacle[i].y + height + 2))
-			return false;
-	return true;
+			&& (y >= obstacle[i].y - 2)
+			&& (y <= obstacle[i].y + height + 1))
+			return true;
+	return false;
 }
 //Cong khong trung chuong ngai vat level 1
 bool Gate_Obstacle(int x, int y) {
@@ -142,7 +142,7 @@ void GenerateFood(int level_index) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 3) + 10;
 			y = rand() % (HEIGH_CONSOLE - 3) + 2;
-		} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == false);
+		} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == true);
 		food[FOOD_INDEX] = { x,y };
 	}
 	if (level_index == 3) {
@@ -186,7 +186,17 @@ void GenerateGate(int width, int height) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (Gate_Snake(x, y) == false || (x < 39 && x > 57 && y < 7 && y > 17));
+		} while (Gate_Snake(x, y) == false || (x < 39 && x > 57 && y < 6 && y > 18));
+		gate[GATE_INDEX] = { x,y };
+	}
+	if (LEVEL == 4) {
+		do {
+			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
+			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
+		} while (Gate_Snake(x, y) == false
+			|| y < 5 && y > 15
+			|| x < 13 && x > 17 && y < 5 || x < 69 && x > 73 && y < 5
+			|| x < 13 && x > 17 && y < 16 && y > 20 || x < 69 && x > 73 && y < 16 && y > 20);
 		gate[GATE_INDEX] = { x,y };
 	}
 }
@@ -251,6 +261,11 @@ void DrawObstacle(int x, int y, int width, int height) {
 void DrawMapLv(int level_index) {
 	switch (level_index) {
 	case 1:
+		if (FOOD_INDEX >= 1) {
+			//increase speed
+			if (SPEED == MAX_SPEED - 1) SPEED = 1;
+			SPEED++;
+		}
 		break;
 	case 2:
 		//Draw Obstacle
@@ -507,11 +522,10 @@ bool SnakeTouchGate(int x, int y, int width, int height) {
 }
 bool SnakeTouchSpider(int x, int y) {
 	bool flag = false;
-	if ((x == nhen_x && y == nhen_y - 2) || (x == nhen_x && y == nhen_y) || (x==nhen_x && y==nhen_y-1)
-		|| (x == nhen_x && y == nhen_y + 1) || (x == nhen_x + 1 && y == nhen_y + 1)
-		|| (x == nhen_x + 2 && y == nhen_y + 1) || (x == nhen_x + 2 && y == nhen_y)
-		|| (x == nhen_x + 2 && y == nhen_y - 2) || (x == nhen_x + 1 && y == nhen_y - 1)
-		|| (x == nhen_x+2 && y ==nhen_y -1)||(x==nhen_x+2&&y==nhen_y +2)) {
+	if ((x == nhen_x && y == nhen_y - 2) || (x == nhen_x && y == nhen_y) 
+		|| (x == nhen_x && y == nhen_y + 1) || (x == nhen_x + 1 && y == nhen_y + 1) || (x == nhen_x + 2 && y == nhen_y + 1) 
+		|| (x == nhen_x + 2 && y == nhen_y) || (x == nhen_x + 1 && y == nhen_y - 2)
+		|| (x == nhen_x + 2 && y == nhen_y - 2) || (x == nhen_x + 1 && y == nhen_y - 1)); {
 		flag = true;
 	}
 	return flag;
