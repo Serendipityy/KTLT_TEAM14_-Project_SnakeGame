@@ -6,28 +6,13 @@ void FixconsoleWindow() {
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
+
 // Chỉnh màu chữ 
 void setTextColor(int color)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
-// Chỉnh màu background
-void BackGroundColor(WORD color)
-{
-	HANDLE hConsoleOutput;
-	hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
-	GetConsoleScreenBufferInfo(hConsoleOutput, &screen_buffer_info);
-
-	WORD wAttributes = screen_buffer_info.wAttributes;
-	color &= 0x000f;
-	color <<= 4;
-	wAttributes &= 0xff0f;
-	wAttributes |= color;
-
-	SetConsoleTextAttribute(hConsoleOutput, wAttributes);
-}
 // Dịch chuyển
 void GotoXY(int x, int y) {
 	COORD coord;
@@ -35,7 +20,8 @@ void GotoXY(int x, int y) {
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-//change fontsize
+
+//Thay đổi font chữ
 void fontsize(int a, int b) {
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
@@ -45,6 +31,7 @@ void fontsize(int a, int b) {
 	lpConsoleCurrentFontEx->dwFontSize.Y = b;
 	SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
 }
+
 // hidecur
 void ShowCur(bool CursorVisibility)
 {
@@ -55,7 +42,8 @@ void ShowCur(bool CursorVisibility)
 	ConCurInf.bVisible = CursorVisibility;
 	SetConsoleCursorInfo(handle, &ConCurInf);
 }
-//
+
+//Vẽ khung game
 void DrawBoard(int x, int y, int width, int height, int curPosX, int curPosY) {
 	GotoXY(x, y);
 	setTextColor(9);
@@ -69,6 +57,8 @@ void DrawBoard(int x, int y, int width, int height, int curPosX, int curPosY) {
 	setTextColor(7);
 	GotoXY(curPosX, curPosY);
 }
+
+//Vẽ chữ TEAM 14
 void DrawTeam14() {
 	GotoXY(22, 25);
 	cout << " ____  ____   __   _  _     __   ___ ";
@@ -80,6 +70,7 @@ void DrawTeam14() {
 	cout << "(__) (____)\\_/\\_/\\_)(_/   (__)  (__/";
 }
 
+//Vẽ con rắn
 void DrawSnake_Game() {
 	GotoXY(93, 1);
 	cout << "__";
@@ -98,6 +89,8 @@ void DrawSnake_Game() {
 	GotoXY(90, 8);
 	cout << "(_________()Oo";
 }
+
+//Vẽ chữ SNAKE
 void DrawSnake_Text() {
 	GotoXY(85,10);
 	cout << "___  __   ___  __ _ ____ ";
@@ -108,6 +101,8 @@ void DrawSnake_Text() {
 	GotoXY(85, 13);
 	cout << "|___/|/\\_/|/\\_/|/\\_/|___/";
 }
+
+//Vẽ chữ SNAKE GAME trong menu
 void DrawSnakeGame_Menu(char Text, int x, int y ) {
 	if (Text == 83 ||Text == 115) {
 		GotoXY(x, y);
@@ -166,6 +161,8 @@ void DrawSnakeGame_Menu(char Text, int x, int y ) {
 		cout << "|_|\\/|_|";
 	}
 }
+
+//Vẽ con rắn trong menu
 void DrawSnake_Menu() {
 	GotoXY(20, 1);
 	cout << "____";
@@ -174,6 +171,8 @@ void DrawSnake_Menu() {
 	GotoXY(3, 3);
 	cout << "<_O_O_O_O_O_O_O_O____/   \\";
 }
+
+//Vẽ chữ GAME OVER
 void DrawGameOver() {
 	int WIDTH_CONSOLE = 20;
 	int HEIGH_CONSOLE = 20;
@@ -193,6 +192,7 @@ void DrawGameOver() {
 	cout << "|___/                                        ";
 }
 
+//Vẽ hướng dẫn chơi
 void DrawHowToPlay() {
 	GotoXY(93, 23);
 	cout << "HOW TO PLAY";
@@ -206,15 +206,15 @@ void DrawHowToPlay() {
 	cout << "BACK TO MENU: M";
 }
 
-//tinh toan vi tri in menu_list
+//Tính toán vị trí in menu_list
 int pos_calc(string s) {
 	return (s.length() / 2 + 1);
 }
-//drawboard cho menu
+
+//Drawboard cho menu
 void Draw_Board(int x, int y, int width, int height, int curPosX, int curPosY) {
 	GotoXY(x, y);
 	setTextColor(9);
-	//char aa = char(219);<-remove this!!!
 	cout << char(201);
 	for (int i = 1; i < width; i++) cout << char(205);
 	cout << char(187);
@@ -243,6 +243,8 @@ void Draw_Board(int x, int y, int width, int height, int curPosX, int curPosY) {
 	setTextColor(2);
 	DrawSnake_Menu();
 }
+
+//Vẽ bảng menu save game load setiing..
 void Draw_menu_board() {
 	setTextColor(9);
 	int x_menu = 2, y_menu = 5;
@@ -271,20 +273,6 @@ void Draw_menu_board() {
 					  " (                ( " };
 	string bot[2] = { " |________________| ",
 					R"( (_____/\/\/\_____))"};
-	/*for (int i = 0; i < 3; i++) {
-		GotoXY(x_menu, y_menu-1+i);
-		cout << top[i];
-	}
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 4; j++) {
-			GotoXY(x_menu, 2 + y_menu + i * 4 + j);
-			cout << mid[j];
-		}
-	}
-	for (int i = 0; i < 2; i++) {
-		GotoXY(x_menu,2 + y_menu + 5*4+i);
-		cout << bot[i];
-	}*/
 	for (int i = 16; i >5; i--) {
 		for (int j = i+1; j <33-i; j++)
 		{
