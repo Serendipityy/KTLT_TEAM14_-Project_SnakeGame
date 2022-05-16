@@ -37,6 +37,7 @@ int nhen_x = 50;
 int nhen_y = 10;
 // sound on off
 int sound_ = 1;
+int end_game=0;
 // Thong tin file in ra phan load
 typedef struct save_info {
 	char name[16];
@@ -58,7 +59,6 @@ void animationDead() {
 		n++;
 	}
 	long time;
-	for (;;)
 	{
 		system("color a");
 		for (time = 0; time < 99999999; time++);
@@ -72,28 +72,9 @@ void animationDead() {
 		for (time = 0; time < 9999999; time++);
 		system("color c");
 		for (time = 0; time < 9999999; time++);
-		break;
 	}
 	Sleep(100);
 }
-	/*for (int time = 0; time < 14; time++)
-	{
-		if (time % 2 == 0)
-			for (int i = 0; i < SIZE_SNAKE; i++)
-			{
-				GotoXY(snake[i].x, snake[i].y);
-				setTextColor(12);
-				cout << MSSV[SIZE_SNAKE - 1 - i];
-			}
-		else
-			for (int i = 0; i < SIZE_SNAKE; i++)
-			{
-				GotoXY(snake[i].x, snake[i].y);
-				cout << " ";
-			}
-		Sleep(100);
-	}
-}*/
 // Kiểm tra vị trí của thức ăn
 bool IsValid(int x, int y) {
 	for (int i = 0; i < SIZE_SNAKE; i++)
@@ -177,11 +158,18 @@ void GenerateFood(int level_index) {
 void GenerateGate(int width, int height) {
 	int x, y;
 	srand(time(NULL));
-	do {
+	if (LEVEL==1){
+	        x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
+		y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
+		gate[GATE_INDEX] = { x,y };
+	}
+	if (LEVEL==2) {
+		do {
 		x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 		y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
 	} while (Gate_Snake(x, y) == false || Gate_Obstacle(x, y) == false);
 	gate[GATE_INDEX] = { x,y };
+	}
 	if (LEVEL == 3) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
@@ -241,9 +229,7 @@ void StartGame() {
 	STATE = 1;
 }
 void ExitGame() {
-	system("cls");
-	/*TerminateThread(t, 0);*/
-	//threadrun = 0;
+	system("cls"); 
 	_endthreadex(0);
 }
 void PauseGame(HANDLE t) {
@@ -260,13 +246,6 @@ void DrawObstacle(int x, int y, int width, int height) {
 }
 void DrawMapLv(int level_index) {
 	switch (level_index) {
-	case 1:
-		if (FOOD_INDEX >= 1) {
-			//increase speed
-			if (SPEED == MAX_SPEED - 1) SPEED = 1;
-			SPEED++;
-		}
-		break;
 	case 2:
 		//Draw Obstacle
 		for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
@@ -324,7 +303,6 @@ void DrawMapLv(int level_index) {
 		cout << char(219);
 		GotoXY(78 - 7, 20 - 2);
 		cout << char(219);
-		//MoveSpider;
 	}
 }
 bool DrawSpider() {
@@ -391,13 +369,12 @@ void Ghim() {
 }
 void ProcessDead() {
 	STATE = 0;
-	PlaySound(TEXT("dead.wav"), NULL, SND_ASYNC);
-	//GotoXY(0, HEIGH_CONSOLE + 2);
+	if (sound_==1) PlaySound(TEXT("dead.wav"), NULL, SND_ASYNC);
 	DrawGameOver();
 	animationDead();
 }
 void Eat() {
-	PlaySound(TEXT("eat.wav"), NULL, SND_ASYNC);
+	if (sound_==1) PlaySound(TEXT("eat.wav"), NULL, SND_ASYNC);
 	GotoXY(93, HEIGH_CONSOLE - 5);
 	Score++;
 	cout << Score;
@@ -436,7 +413,7 @@ void LevelUp(int level_index) {
 	DrawHowToPlay();
 
 	LEVEL++;
-	PlaySound(TEXT("levelup.wav"), NULL, SND_ASYNC);
+	if (sound_==1) PlaySound(TEXT("levelup.wav"), NULL, SND_ASYNC);
 	GotoXY(87, HEIGH_CONSOLE - 5);
 	setTextColor(7);
 	cout << "Score:" << Score;
@@ -853,6 +830,10 @@ void MoveUp() {
 			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
 			printf("%c", ' ');
 			SIZE_SNAKE--;
+			if (SIZE_SNAKE==0){
+				STATE = 0;
+				end_game = 1;
+			}
 		}
 		else {
 			if (snake[SIZE_SNAKE - 1].x == food[FOOD_INDEX].x && snake[SIZE_SNAKE - 1].y - 1 == food[FOOD_INDEX].y) {
@@ -865,11 +846,6 @@ void MoveUp() {
 			snake[SIZE_SNAKE - 1].y--;
 		}
 	}
-}
-void ProcessEndgame() {
-	back_to_menu = 1;
-	system("cls");
-	draw_gameover();
 }
 // Thread
 void ThreadFunc() {
@@ -896,7 +872,7 @@ void ThreadFunc() {
 			if (LEVEL == 4) {
 				MoveSpider();
 				//Sleep(10);
-				Sleep(160 - 10 * LEVEL);
+				Sleep(160 - 15 * LEVEL);
 				m.lock();
 				GotoXY(nhen_x + 2, nhen_y - 2);
 				cout << "     ";
@@ -1221,7 +1197,7 @@ void Menu()
 {
 	//tch();
 	int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
-	PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
+	if (sound_==1) PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
 	int menu_choice = 0;
 	char c;
 	int check = 0;
@@ -1268,7 +1244,7 @@ void Menu()
 					exit(0);
 				if (menu_choice == 0) {//PLAY
 					ProcessStart();
-					PlaySound(NULL, NULL, SND_ASYNC);
+					if (sound_==1) PlaySound(NULL, NULL, SND_ASYNC);
 					if (STATE == 1) return;
 				}
 				if (menu_choice == 1) {//LOAD GAME 
@@ -1295,13 +1271,14 @@ void Menu()
 	}
 }
 void DeadOption() {
-	PlaySound(TEXT("gameover.wav"), NULL, SND_ASYNC);
+	if (sound_==1 && end_game==0) PlaySound(TEXT("gameover.wav"), NULL, SND_ASYNC);
 	string death_option[3] = { " Play again "," Menu "," Exit " };
 	string death_option_[3] = { "  Play again  ","  Menu  ","  Exit  " };
 	int x_over = 15, y_over = 15;
 	int cur_choice = 0;
 	system("cls");
-	draw_gameover();
+	if (end_game == 1) draw_gameover();
+	else Draw_endgame();
 	char c;
 	while (1) {
 		setTextColor(14);
@@ -1326,7 +1303,7 @@ void DeadOption() {
 				system("cls");
 				ResetData();
 				Start();
-				PlaySound(NULL, NULL, SND_ASYNC);
+				if (sound_==1) PlaySound(NULL, NULL, SND_ASYNC);
 			}
 			else if (cur_choice == 1)
 			{
@@ -1339,7 +1316,6 @@ void DeadOption() {
 		if (cur_choice > 2) cur_choice = 0;
 		Sleep(50);
 	}
-	//TerminateThread(handle_t1, 0);
 	setTextColor(12);
 
 }
@@ -1377,16 +1353,14 @@ void Run() {
 					else if (temp == 'S') CHAR_LOCK = 'W';
 					else CHAR_LOCK = 'D';
 					MOVING = temp;
-					Sleep(160 - 10 * LEVEL);
+					Sleep(160 - 15 * LEVEL);
 				}
 			}
 		}
 		else {
 			 DeadOption();
 			if (back_to_menu == 1) {
-
 				t.detach();
-				//TerminateThread(handle_t, 0);
 				return;
 			}
 		}
@@ -1401,6 +1375,7 @@ void main() {
 	ResetData();
 	while (1) {
 		listFiles("save");
+		end_game=0;
 		Menu();
 		file.clear();
 		Run();
