@@ -151,8 +151,10 @@ void GenerateGate(int width, int height) {
 	int x, y;
 	srand(time(NULL));
 	if (LEVEL == 1) {
-		x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
-		y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
+		do {
+			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
+			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
+		} while (Gate_Snake(x, y) == false); 	
 		gate[GATE_INDEX] = { x,y };
 	}
 	if (LEVEL == 2) {
