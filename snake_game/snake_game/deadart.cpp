@@ -138,6 +138,8 @@ string graph[] = {
     R"(         /\         )",
     R"(         \/         )"
 };
+
+//Hiệu ứng bầu trời
 void ThreadAnimation(){
     while (1) {
     //try on loop sky
@@ -150,14 +152,13 @@ void ThreadAnimation(){
             for (int i = 0; i < 7; i++) {
                 GotoXY(63, 4 + i);
                 cout << moon[i];
-
             }
             Sleep(500);
-
         }
-        
     }
 }
+
+//Vẽ màn hình chờ game over
 void draw_gameover() {
     int x_over = 15, y_over = 15;
     setTextColor(15);
@@ -209,6 +210,8 @@ void draw_gameover() {
 
    }
 }
+
+//Vẽ kết thúc game
 void Draw_endgame() {
      string moon[] = {
     R"(    _,--._    )",
