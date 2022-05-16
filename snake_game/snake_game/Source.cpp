@@ -1,49 +1,54 @@
 #include "nkea.h"
 //constants
-#define MAX_SIZE_SNAKE 40
-#define MAX_SIZE_FOOD 4
-#define MAX_SIZE_OBSTACLE 5
-#define MAX_SIZE_GATE 5
-#define MAX_SPEED 2
+#define MAX_SIZE_SNAKE 40 //Kích thước tối đa của rắn
+#define MAX_SIZE_FOOD 4 //Thức ăn tối đa trong 1 màn
+#define MAX_SIZE_OBSTACLE 5 //Chướng ngại vật tối đa trong level 1
+#define MAX_SIZE_GATE 4 //Số cổng tối đa
+#define MAX_SPEED 2 //Tốc độ tối đa của rắn
 mutex m;
 //GLOBAL variables
-POINT snake[40];
-POINT food[4];
-POINT obstacle[5];
-POINT gate[5];
+POINT snake[40]; //Mảng lưu vị trí từng phần của rắn
+POINT food[4]; //Mảng lưu vị trí thức ăn
+POINT obstacle[5]; //Mảng lưu vị trí chướng ngại vật level
+POINT gate[5]; //Mảng lưu vị trí cổng
 int MSSV[40] = { 2,1,1,2,0,4,4,9,
 2,1,1,2,0,4,5,8,
 2,1,1,2,0,4,6,4,
 2,1,1,2,0,4,7,5,
-2,1,1,2,0,4,8,5 };
-int CHAR_LOCK;
-int MOVING;
-int SPEED = 1;
-int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118;
-int FOOD_INDEX;
-int GATE_INDEX;
-int SIZE_SNAKE;
-int STATE;
-int LEVEL;
-int Score;
+2,1,1,2,0,4,8,5 }; //Mảng lưu MSSV của các thành viên
+int CHAR_LOCK; //Xác định hướng mà rắn không thể di chuyển 
+int MOVING; //Xác định hướng di chuyển của rắn
+int SPEED = 1; //Tốc độ di chuyển của rắn
+int HEIGH_CONSOLE = 29, WIDTH_CONSOLE = 118; //Chiều cao và chiều rộng màn hình console
+int FOOD_INDEX; //Chỉ số thức ăn
+int GATE_INDEX; //Chỉ số cổng
+int SIZE_SNAKE; //Kích thước của rắn
+int STATE; //Trạng thái của rắn: sống hay chết
+int LEVEL; //Màn chơi
+int Score; //Điểm số
 int threadrun = 1;
-// Dieu kien de chay menu
+//Điều kiện để chạy menu
 int menu_run = 1;
 int ESC = 27;
 int back_to_menu = 0;
 char Name[10];
-// Thong so Spider
+
+//Thông số Spider
 int nhen_x = 50;
 int nhen_y = 10;
+
 // sound on off
 int sound_ = 1;
 int end_game = 0;
+
 // Thong tin file in ra phan load
 typedef struct save_info {
 	char name[16];
 	char timestr[11];
 	int level, score;
 };
+
+//Hiệu ứng rắn chết
 void DeadAnimation() {
 	char color[4][8] = { "color a","color b","color c","color d" };
 	int i = 0;
@@ -54,42 +59,28 @@ void DeadAnimation() {
 		Sleep(100);
 		if (_kbhit()) break;
 	}
-	/*int n = 0;
-	long time;
-	{
-		system("color a");
-		for (time = 0; time < 99999999; time++);
-		system("color b");
-		for (time = 0; time < 99999999; time++);
-		system("color d");
-		for (time = 0; time < 99999999; time++);
-		system("color c");
-		for (time = 0; time < 99999999; time++);
-		system("color d");
-		for (time = 0; time < 9999999; time++);
-		system("color c");
-		for (time = 0; time < 9999999; time++);
-	}
-	Sleep(100);*/
 }
-// Kiểm tra vị trí của thức ăn
+
+// Kiểm tra vị trí của thức ăn không trùng với rắn
 bool IsValid(int x, int y) {
 	for (int i = 0; i < SIZE_SNAKE; i++)
 		if (snake[i].x == x && snake[i].y == y)
 			return false;
 	return true;
 }
-// Kiem tra vi tri chuong ngai vat 
+
+// Kiểm tra vị trí thức ăn cách chướng ngại vật tối thiểu 1 ô
 bool Food_Obstacle(int x, int y, int width, int height) {
 	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++)
-		if ((x >= obstacle[i].x - 2)
+		if ((x >= obstacle[i].x - 1)
 			&& (x <= obstacle[i].x + width + 1)
-			&& (y >= obstacle[i].y - 2)
+			&& (y >= obstacle[i].y - 1)
 			&& (y <= obstacle[i].y + height + 1))
-			return true;
-	return false;
+			return false;
+	return true;
 }
-//Cong khong trung chuong ngai vat level 1
+
+//Kiểm tra cổng không trùng chướng ngại vật level 2
 bool Gate_Obstacle(int x, int y) {
 	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++)
 		if ((x + 3 >= obstacle[i].x) && (x <= obstacle[i].x + 5)
@@ -97,14 +88,16 @@ bool Gate_Obstacle(int x, int y) {
 			return false;
 	return true;
 }
-//Kiem tra cong cach dau ran toi thieu 5 o
+
+//Kiểm tra cổng cách đầu rắn tối thiểu 5 ô
 bool Gate_Snake(int x, int y) {
 	if (snake[SIZE_SNAKE - 1].y >= y - 5 && snake[SIZE_SNAKE - 1].y <= y + 7
 		&& snake[SIZE_SNAKE - 1].x >= x - 5 && snake[SIZE_SNAKE - 1].x <= x + 8)
 		return false;
 	return true;
 }
-// Khoi tao
+
+// Khởi tạo vị trí thức ăn
 void GenerateFood(int level_index) {
 	int x, y;
 	if (level_index == 1) {
@@ -120,7 +113,7 @@ void GenerateFood(int level_index) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 3) + 10;
 			y = rand() % (HEIGH_CONSOLE - 3) + 2;
-		} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == true);
+		} while (IsValid(x, y) == false || Food_Obstacle(x, y, 5, 7) == false);
 		food[FOOD_INDEX] = { x,y };
 	}
 	if (level_index == 3) {
@@ -152,6 +145,8 @@ void GenerateFood(int level_index) {
 		food[FOOD_INDEX] = { x,y };
 	}
 }
+
+//Khởi tạo vị trí cổng
 void GenerateGate(int width, int height) {
 	int x, y;
 	srand(time(NULL));
@@ -185,7 +180,8 @@ void GenerateGate(int width, int height) {
 		gate[GATE_INDEX] = { x,y };
 	}
 }
-// Chuc nang 
+
+//Chức năng
 void ResetData() {
 	CHAR_LOCK = 'A', MOVING = 'D', SPEED = 1; FOOD_INDEX = 0, GATE_INDEX = 0,
 		WIDTH_CONSOLE = 70, HEIGH_CONSOLE = 20, SIZE_SNAKE = 6; Score = 0, LEVEL = 1;
@@ -197,6 +193,8 @@ void ResetData() {
 	DrawMapLv(LEVEL);
 	GenerateFood(LEVEL);
 }
+
+//Vẽ màn hình chơi game
 void StartGame() {
 	system("cls");
 	ResetData();
@@ -225,14 +223,19 @@ void StartGame() {
 	ShowCur(0);
 	STATE = 1;
 }
+
+//Thoát game
 void ExitGame() {
 	system("cls");
 	_endthreadex(0);
 }
+
+//Dừng game
 void PauseGame(HANDLE t) {
 	SuspendThread(t);
 }
-// Ve
+
+// Vẽ chướng ngại vật level 2
 void DrawObstacle(int x, int y, int width, int height) {
 	GotoXY(x, y);
 	for (int i = x; i < width + x; i++) {
@@ -241,6 +244,8 @@ void DrawObstacle(int x, int y, int width, int height) {
 		}
 	}
 }
+
+//Vẽ màn chơi
 void DrawMapLv(int level_index) {
 	switch (level_index) {
 	case 2:
@@ -277,7 +282,7 @@ void DrawMapLv(int level_index) {
 		}
 		break;
 	case 4:
-		DrawSpider();
+		DrawSpider(); //Vẽ nhện
 		// tường ngang
 		for (int i = 23; i <= 35; i++) {
 			GotoXY(i, 5);
@@ -302,6 +307,8 @@ void DrawMapLv(int level_index) {
 		cout << char(219);
 	}
 }
+
+//Vẽ nhện
 bool DrawSpider() {
 	bool flag = true;
 	if (flag) {
@@ -316,6 +323,8 @@ bool DrawSpider() {
 	}
 	return flag;
 }
+
+//Vẽ cổng
 void DrawGate(int x, int y, int width, int height) {
 	GotoXY(x, y);
 	for (int i = 0; i <= width; i++)
@@ -329,6 +338,8 @@ void DrawGate(int x, int y, int width, int height) {
 		cout << char(219);
 	}
 }
+
+//Vẽ rắn và thức ăn
 void DrawSnakeAndFood(char str) {
 	if (FOOD_INDEX != -1) {
 		GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
@@ -339,7 +350,8 @@ void DrawSnakeAndFood(char str) {
 		printf("%d", MSSV[SIZE_SNAKE - 1 - i]);
 	}
 }
-// Xoa cong
+
+// Xóa cổng
 void ClearObstacle(int x, int y, int width, int height) {
 	GotoXY(x, y);
 	for (int i = x; i < width + x; i++) {
@@ -348,6 +360,8 @@ void ClearObstacle(int x, int y, int width, int height) {
 		}
 	}
 }
+
+//Xóa rắn và thức ăn
 void ClearSnakeAndFood(char str) {
 	GotoXY(food[FOOD_INDEX].x, food[FOOD_INDEX].y);
 	printf("%c", str);
@@ -357,6 +371,7 @@ void ClearSnakeAndFood(char str) {
 	}
 }
 
+//Vị trí rắn bắt đầu chạy khi qua màn
 void Ghim() {
 	for (int i = 0; i < SIZE_SNAKE; i++) {
 		snake[i] = { 10 + i,10 };
@@ -364,52 +379,54 @@ void Ghim() {
 	MOVING = 'D';
 	CHAR_LOCK = 'A';
 }
+
+//Rắn chết
 void ProcessDead() {
-	STATE = 0;
+	STATE = 0; 
 	if (sound_ == 1) PlaySound(TEXT("dead.wav"), NULL, SND_ASYNC);
 	DrawGameOver();
-	//DeadAnimation();
 }
+
+//Rắn ăn thức ăn
 void Eat() {
 	if (sound_ == 1) PlaySound(TEXT("eat.wav"), NULL, SND_ASYNC);
 	GotoXY(93, HEIGH_CONSOLE - 5);
-	Score++;
-	cout << Score;
-	snake[SIZE_SNAKE] = food[FOOD_INDEX];
+	Score++; //Tăng điểm lên 1
+	cout << Score; 
+	snake[SIZE_SNAKE] = food[FOOD_INDEX]; 
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1)
 	{
 		FOOD_INDEX = -1;
-		//Create Gate
+		//Tạo cổng
 		GenerateGate(2, 2);
 		DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
 	}
 	else {
-		FOOD_INDEX++;
-		GenerateFood(LEVEL);
-		SIZE_SNAKE++;
+		FOOD_INDEX++; //Chỉ số thức ăn tăng lên 1
+		GenerateFood(LEVEL); //Khởi tạo vị trí thức ăn mới
+		SIZE_SNAKE++; //Rắn dài thêm
 	}
 }
+
+//Qua màn chơi mới
 void LevelUp(int level_index) {
 	system("cls");
 	fontsize(16, 16);
 
+	//Vẽ lại màn hình chơi game
 	DrawBoard(81, 0, 32, HEIGH_CONSOLE);
 	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
 	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
 	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
-
 	setTextColor(2);
 	DrawSnake_Game();
-
 	setTextColor(13);
 	DrawSnake_Text();
-
 	setTextColor(14);
 	DrawTeam14();
-
 	DrawHowToPlay();
 
-	LEVEL++;
+	LEVEL++; //level tăng lên 1
 	if (sound_ == 1) PlaySound(TEXT("levelup.wav"), NULL, SND_ASYNC);
 	GotoXY(87, HEIGH_CONSOLE - 5);
 	setTextColor(7);
@@ -417,11 +434,14 @@ void LevelUp(int level_index) {
 	GotoXY(87, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
 	STATE = 1;
+	
+	//Khởi tạo vị trí thức ăn đầu tiên ở màn tiếp theo
 	FOOD_INDEX = 0;
-	GenerateFood(/*FOOD_INDEX*/LEVEL);
+	GenerateFood(LEVEL);
+	
 	SPEED = 1;
-	GATE_INDEX++;
-	if (level_index == 1) {
+	GATE_INDEX++; //cổng tăng lên 1
+	if (level_index == 2) {
 		obstacle[0] = { 18, 1 }; obstacle[1] = { 41, 1 };
 		obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8 };
 		obstacle[4] = { 53, HEIGH_CONSOLE - 8 };
@@ -429,8 +449,9 @@ void LevelUp(int level_index) {
 	Ghim();
 	DrawMapLv(LEVEL);
 }
-/*Rắn chạm*/
 
+/*Rắn chạm*/
+//Rắn chạm thân
 bool SnakeTouchBody(int x, int y)
 {
 	for (int i = 1; i < SIZE_SNAKE; i++)
@@ -442,6 +463,8 @@ bool SnakeTouchBody(int x, int y)
 	}
 	return false;
 }
+
+//Rắn chạm chướng ngại vật level 2
 bool SnakeTouchObstacle(int x, int y, int width, int height)
 {
 	for (int i = 0; i < MAX_SIZE_OBSTACLE; i++) {
@@ -451,6 +474,8 @@ bool SnakeTouchObstacle(int x, int y, int width, int height)
 	}
 	return false;
 }
+
+//Rắn chạm chướng ngại vật level 3
 bool SnakeTouch_Lv3(int x, int y) {
 	bool flag2 = false;
 	if (
@@ -471,6 +496,8 @@ bool SnakeTouch_Lv3(int x, int y) {
 	}
 	return flag2;
 }
+
+//Rắn chạm chướng ngại vật level 4
 bool SnakeTouch_Lv4(int x, int y) {
 	bool flag3 = false;
 	if ((x >= 23 && x <= 35 && y == 5)
@@ -481,6 +508,8 @@ bool SnakeTouch_Lv4(int x, int y) {
 	}
 	return flag3;
 }
+
+//Rắn chạm cổng
 bool SnakeTouchGate(int x, int y, int width, int height) {
 	if (FOOD_INDEX < MAX_SIZE_FOOD - 1 && FOOD_INDEX != -1) return false;
 	if (x == gate[GATE_INDEX].x + 1 && y == gate[GATE_INDEX].y)
@@ -494,6 +523,8 @@ bool SnakeTouchGate(int x, int y, int width, int height) {
 	}
 	return false;
 }
+
+//Rắn chạm nhện
 bool SnakeTouchSpider(int x, int y) {
 	bool flag = false;
 	if ((x == nhen_x && y == nhen_y - 2) || (x == nhen_x && y == nhen_y)
@@ -505,7 +536,7 @@ bool SnakeTouchSpider(int x, int y) {
 	return flag;
 }
 /*----------------*/
-// Di chuyen
+//Di chuyển
 void MoveSpider() {
 	DrawSpider();
 	//Sleep(90);
@@ -737,6 +768,7 @@ void MoveUp() {
 			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
+		//Điều kiện rắn vào cổng
 		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1 && FOOD_INDEX == -1) {
 			GotoXY(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y);
 			printf("%c", ' ');
@@ -844,6 +876,7 @@ void MoveUp() {
 		}
 	}
 }
+
 // Thread
 void ThreadFunc() {
 	while (back_to_menu == 0) {
@@ -889,6 +922,7 @@ void ThreadFunc() {
 		}
 	}
 }
+
 //overload 
 istream& operator >> (istream& in, POINT& a)
 {
@@ -926,14 +960,12 @@ void ProcessSave() {
 	char name[20];
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	cout << "Enter name: ";
-	//cin.ignore();
-	//_getch();
 	fflush(stdin);
 	cin.getline(name, 20);
 	cout << name;
-	//strcat_s(name, ".txt");
 	SaveData(name);
 }
+
 //Load stuff
 vector<save_info> file;
 vector<string> savename;
@@ -956,6 +988,7 @@ void readinfo() {
 	}
 	Data.close();
 }
+
 //nhap sanh sach file luu
 void listFiles(const char* dirname) {
 	DIR* dir = opendir(dirname);
@@ -974,6 +1007,7 @@ void listFiles(const char* dirname) {
 	}
 	closedir(dir);
 }
+
 //in danh sach file saved
 void printlist(int begin, int end) {
 	for (int i = begin; i <= end; i++) {
@@ -988,6 +1022,7 @@ void Delete_detail_board() {
 		cout << blank;
 	}
 }
+
 void ProcessLoad() {
 	char k;
 	int Cur_Choice = 0, Cur_element = 0;
@@ -1058,6 +1093,7 @@ void NewGame() {
 	system("cls");
 	ResetData();
 }
+
 void Start() {
 	fontsize(16, 16);
 	// Vẽ khung
@@ -1084,6 +1120,8 @@ void Start() {
 	STATE = 1;
 	return;
 }
+
+//Bắt đầu game
 void ProcessStart() {
 	int x_mid_detail_board = x_filesave + 35, y_mid_detail_board = y_filesave;
 	if (Score == 0) {
@@ -1142,8 +1180,9 @@ void ProcessStart() {
 		}
 	}
 	Start();
-
 }
+
+//Cài đặt âm thanh
 void ProcessSetting() {
 	int x_mid_detail_board = x_filesave + 35, y_mid_detail_board = y_filesave;
 	GotoXY(x_mid_detail_board, y_mid_detail_board);
@@ -1165,6 +1204,8 @@ void ProcessSetting() {
 		Sleep(50);
 	}
 }
+
+//Mở hướng dẫn chơi game
 void ProcessInstruction() {
 	setTextColor(11);
 	GotoXY(x_filesave, y_filesave - 2);
@@ -1186,6 +1227,8 @@ void ProcessInstruction() {
 		return;
 	}
 }
+
+//Lựa chọn menu
 void Menu()
 {
 	//tch();
@@ -1248,12 +1291,10 @@ void Menu()
 				{
 					ProcessSetting();
 				}
-				//go to option - chua lam
 				if (menu_choice == 3)//instruction
 				{
 					ProcessInstruction();
 				}
-				//print high scoore - chua lam
 			}
 		}
 		if (menu_choice < 0)
@@ -1263,6 +1304,8 @@ void Menu()
 		Sleep(50);
 	}
 }
+
+//Lựa chọn sau khi rắn chết
 void DeadOption() {
 	if (end_game == 0) DeadAnimation();
 	getch();
@@ -1315,6 +1358,8 @@ void DeadOption() {
 	setTextColor(12);
 
 }
+
+//Khởi chạy rắn
 void Run() {
 	int temp;
 	thread t(ThreadFunc);
@@ -1362,7 +1407,7 @@ void Run() {
 		}
 	}
 }
-//
+
 void main() {
 	setTextColor(10);
 	ShowCur(0);
