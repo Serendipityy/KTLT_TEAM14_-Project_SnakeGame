@@ -474,16 +474,15 @@ bool SnakeTouch_Lv3(int x, int y) {
 
 //Rắn chạm chướng ngại vật level 4
 bool SnakeTouch_Lv4(int x, int y) {
-	bool flag3 = false;
-	if ((x >= 23 && x <= 35 && y == 5)
-		|| (x >= 51 && x <= 63 && y == 15)
+	bool flag = false;
+	if ((x >= 23 && x <= 36 && y == 5) || (x >= 23 && x <= 36 && y == 15)
+		|| (x >= 51 && x <= 63 && y == 5) || (x >= 51 && x <= 63 && y == 15)
 		|| (x == 15 && y == 2) || (x == 71 && y == 2)
 		|| (x == 15 && y == 18) || (x == 71 && y == 18)) {
-		flag3 = true;
+		flag = true;
 	}
-	return flag3;
+	return flag;
 }
-
 //Rắn chạm cổng
 bool SnakeTouchGate(int x, int y, int width, int height) {
 	if (FOOD_INDEX < MAX_SIZE_FOOD - 1 && FOOD_INDEX != -1) return false;
