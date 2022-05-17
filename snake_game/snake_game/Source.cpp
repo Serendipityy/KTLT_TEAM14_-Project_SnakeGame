@@ -1210,6 +1210,8 @@ void ProcessSetting() {
 			if (cur_choice == 0)
 				sound_ = 1 - sound_;
 			else LEVEL++;
+			if (!sound_) PlaySound(NULL, NULL, SND_ASYNC);
+			else PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
 			if (LEVEL > 4) LEVEL = 1;
 		}
 		else if (c == 'W') cur_choice--;
