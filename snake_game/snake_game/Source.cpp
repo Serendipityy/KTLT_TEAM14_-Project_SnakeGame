@@ -1281,7 +1281,10 @@ void Menu()
 				}
 				if (menu_choice == 1) {//LOAD GAME 
 					ProcessLoad();
-					if (STATE == 1) return;
+					if (STATE == 1) {
+						if (sound_ == 1) PlaySound(NULL, NULL, SND_ASYNC);
+						return;
+					}
 				}
 				if (menu_choice == 2)//setting
 				{
