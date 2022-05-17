@@ -60,13 +60,13 @@ void DrawBoard(int x, int y, int width, int height, int curPosX, int curPosY) {
 
 //Vẽ chữ TEAM 14
 void DrawTeam14() {
-	GotoXY(22, 25);
+	GotoXY(22, 24);
 	cout << " ____  ____   __   _  _     __   ___ ";
-	GotoXY(22, 26);
+	GotoXY(22, 25);
 	cout<<"(_  _)(  __) / _\\ ( \\/ )   /  \\ / _ \\";
-	GotoXY(24, 27);
+	GotoXY(24, 26);
 	cout << ")(   ) _) /    \\/ \\/ \\  (_/ /(__  (";
-	GotoXY(23, 28);
+	GotoXY(23, 27);
 	cout << "(__) (____)\\_/\\_/\\_)(_/   (__)  (__/";
 }
 
