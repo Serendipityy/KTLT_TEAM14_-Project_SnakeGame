@@ -179,7 +179,7 @@ void GenerateGate(int width, int height) {
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
 		} while (Gate_Snake(x, y) == false
 			|| y < 5 && y > 15
-			|| x < 13 && x > 17 && y < 5 || x < 69 && x > 73 && y < 5
+			|| x < 13 && x > 17 && y < 4 || x < 69 && x > 73 && y < 4
 			|| x < 13 && x > 17 && y < 16 && y > 20 || x < 69 && x > 73 && y < 16 && y > 20);
 		gate[GATE_INDEX] = { x,y };
 	}
@@ -534,7 +534,7 @@ bool SnakeTouchSpider(int x, int y) {
 	if ((x == nhen_x && y == nhen_y - 2) || (x == nhen_x && y == nhen_y)
 		|| (x == nhen_x && y == nhen_y + 1) || (x == nhen_x + 1 && y == nhen_y + 1) || (x == nhen_x + 2 && y == nhen_y + 1)
 		|| (x == nhen_x + 2 && y == nhen_y) || (x == nhen_x + 1 && y == nhen_y - 2)
-		|| (x == nhen_x + 2 && y == nhen_y - 2) || (x == nhen_x + 1 && y == nhen_y - 1)); {
+		|| (x == nhen_x + 2 && y == nhen_y - 2) || (x == nhen_x + 1 && y == nhen_y - 1)) {
 		flag = true;
 	}
 	return flag;
