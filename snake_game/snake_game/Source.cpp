@@ -1,3 +1,4 @@
+
 #include "nkea.h"
 //constants
 #define MAX_SIZE_SNAKE 40 //Kích thước tối đa của rắn
@@ -154,8 +155,9 @@ void GenerateGate(int width, int height) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (Gate_Snake(x, y) == false); 	
+		} while (Gate_Snake(x, y) == false);
 		gate[GATE_INDEX] = { x,y };
+		
 	}
 	if (LEVEL == 2) {
 		do {
@@ -168,7 +170,7 @@ void GenerateGate(int width, int height) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (Gate_Snake(x, y) == false || (x >= 33 && x <= 57 && y >= 6 && y <= 16));
+		} while (Gate_Snake(x, y) == false || (x < 39 && x > 57 && y < 6 && y > 18));
 		gate[GATE_INDEX] = { x,y };
 	}
 	if (LEVEL == 4) {
@@ -194,6 +196,36 @@ void ResetData() {
 	obstacle[2] = { 64, 1 }; obstacle[3] = { 29, HEIGH_CONSOLE - 8 }; obstacle[4] = { 53, HEIGH_CONSOLE - 8 };
 	DrawMapLv(LEVEL);
 	GenerateFood(LEVEL);
+}
+
+//Vẽ màn hình chơi game
+void StartGame() {
+	system("cls");
+	ResetData();
+	fontsize(16, 16);
+	// Vẽ khung
+	DrawBoard(81, 0, 32, HEIGH_CONSOLE);
+	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
+	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
+	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
+
+	setTextColor(2);
+	DrawSnake_Game();
+
+	setTextColor(13);
+	DrawSnake_Text();
+
+	setTextColor(14);
+	DrawTeam14();
+	DrawHowToPlay();
+
+	GotoXY(87, HEIGH_CONSOLE - 5);
+	setTextColor(7);
+	cout << "Score:" << Score;
+	GotoXY(87, HEIGH_CONSOLE - 3);
+	cout << "LEVEL:" << LEVEL;
+	ShowCur(0);
+	STATE = 1;
 }
 
 //Thoát game
@@ -354,7 +386,7 @@ void Ghim() {
 
 //Rắn chết
 void ProcessDead() {
-	STATE = 0; 
+	STATE = 0;
 	if (sound_ == 1) PlaySound(TEXT("dead.wav"), NULL, SND_ASYNC);
 	DrawGameOver();
 }
@@ -364,8 +396,8 @@ void Eat() {
 	if (sound_ == 1) PlaySound(TEXT("eat.wav"), NULL, SND_ASYNC);
 	GotoXY(93, HEIGH_CONSOLE - 5);
 	Score++; //Tăng điểm lên 1
-	cout << Score; 
-	snake[SIZE_SNAKE] = food[FOOD_INDEX]; 
+	cout << Score;
+	snake[SIZE_SNAKE] = food[FOOD_INDEX];
 	if (FOOD_INDEX == MAX_SIZE_FOOD - 1)
 	{
 		FOOD_INDEX = -1;
@@ -406,11 +438,11 @@ void LevelUp(int level_index) {
 	GotoXY(87, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
 	STATE = 1;
-	
+
 	//Khởi tạo vị trí thức ăn đầu tiên ở màn tiếp theo
 	FOOD_INDEX = 0;
 	GenerateFood(LEVEL);
-	
+
 	SPEED = 1;
 	GATE_INDEX++; //cổng tăng lên 1
 	if (level_index == 2) {
@@ -484,7 +516,7 @@ bool SnakeTouch_Lv4(int x, int y) {
 //Rắn chạm cổng
 bool SnakeTouchGate(int x, int y, int width, int height) {
 	if (FOOD_INDEX < MAX_SIZE_FOOD - 1 && FOOD_INDEX != -1) return false;
-	if (x == gate[GATE_INDEX].x + 1 && y == gate[GATE_INDEX].y)
+	if (x >= gate[GATE_INDEX].x && x <= gate[GATE_INDEX].x && y == gate[GATE_INDEX].y)
 	{
 		return true;
 	}
@@ -572,7 +604,7 @@ void MoveRight() {
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-		   	|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x + 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
 		else {
@@ -647,7 +679,7 @@ void MoveLeft() {
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-		   	|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x - 1, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
 		else {
@@ -721,7 +753,7 @@ void MoveDown() {
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-		   	|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y + 1, 2, 2) == true) {
 			ProcessDead();
 		}
 		else {
@@ -808,8 +840,6 @@ void MoveUp() {
 				//Level up
 				SIZE_SNAKE = 18;
 				LevelUp(LEVEL);
-				//thread f(MoveSpider);
-				//f.detach();
 			}
 		}
 		else {
@@ -828,7 +858,7 @@ void MoveUp() {
 			|| SnakeTouchBody(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y - 1) == true
 			|| SnakeTouchSpider(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
 			|| SnakeTouch_Lv4(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y) == true
-		   	|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
+			|| SnakeTouchGate(snake[SIZE_SNAKE - 1].x, snake[SIZE_SNAKE - 1].y, 2, 2) == true) {
 			ProcessDead();
 		}
 		else if (snake[SIZE_SNAKE - 1].x == gate[GATE_INDEX].x + 1 && snake[SIZE_SNAKE - 1].y == gate[GATE_INDEX].y + 1 && FOOD_INDEX == -1) {
@@ -1003,7 +1033,9 @@ void ProcessLoad() {
 	char k;
 	int Cur_Choice = 0, Cur_element = 0;
 	int num = file.size();
+
 	if (num - 1 < max_file_shown) max_file_shown = num - 1;
+	GotoXY(0, 0); cout << num << max_file_shown;
 	//in cot 
 	setTextColor(15);
 	GotoXY(x_filesave, y_filesave - 2);
