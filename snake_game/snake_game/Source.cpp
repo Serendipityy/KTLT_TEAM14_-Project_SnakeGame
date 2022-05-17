@@ -1391,6 +1391,7 @@ void Run() {
 				PauseGame(handle_t);
 			}
 			else if (temp == 'M') {
+				PauseGame(handle_t);
 				STATE = 0;
 				system("cls");
 				back_to_menu = 1;
