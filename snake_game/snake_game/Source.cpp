@@ -196,36 +196,6 @@ void ResetData() {
 	GenerateFood(LEVEL);
 }
 
-//Vẽ màn hình chơi game
-void StartGame() {
-	system("cls");
-	ResetData();
-	fontsize(16, 16);
-	// Vẽ khung
-	DrawBoard(81, 0, 32, HEIGH_CONSOLE);
-	DrawBoard(8, HEIGH_CONSOLE + 4, WIDTH_CONSOLE, 5);
-	DrawBoard(81, HEIGH_CONSOLE + 2, 32, 7);
-	DrawBoard(8, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
-
-	setTextColor(2);
-	DrawSnake_Game();
-
-	setTextColor(13);
-	DrawSnake_Text();
-
-	setTextColor(14);
-	DrawTeam14();
-	DrawHowToPlay();
-
-	GotoXY(87, HEIGH_CONSOLE - 5);
-	setTextColor(7);
-	cout << "Score:" << Score;
-	GotoXY(87, HEIGH_CONSOLE - 3);
-	cout << "LEVEL:" << LEVEL;
-	ShowCur(0);
-	STATE = 1;
-}
-
 //Thoát game
 void ExitGame() {
 	system("cls");
