@@ -170,7 +170,7 @@ void GenerateGate(int width, int height) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (Gate_Snake(x, y) == false || (x < 39 && x > 57 && y < 6 && y > 18));
+		} while (Gate_Snake(x, y) == false || (x < 29 || x > 57 && y < 4 || y > 16));
 		gate[GATE_INDEX] = { x,y };
 	}
 	if (LEVEL == 4) {
@@ -178,9 +178,9 @@ void GenerateGate(int width, int height) {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
 		} while (Gate_Snake(x, y) == false
-			|| y < 4 && y > 15
-			&&  (x < 13 && x > 17 || x < 69 && x > 73
-			|| x < 13 && x > 17 && y < 16 && y > 20 || x < 69 && x > 73 && y < 16 && y > 20));
+			|| (y < 4 || y > 15 && x > 2 || x < 18)
+			|| (x < 13 || x > 17 && y < 4) || ( x < 69 || x > 73 && y < 4) 
+			|| (x < 13 || x > 17 && y < 16 || y > 20) || (x < 69 || x > 73 && y < 16 || y > 20));
 		gate[GATE_INDEX] = { x,y };
 	}
 }
@@ -1210,8 +1210,6 @@ void ProcessSetting() {
 			if (cur_choice == 0)
 				sound_ = 1 - sound_;
 			else LEVEL++;
-			if (!sound_) PlaySound(NULL, NULL, SND_ASYNC);
-			else PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
 			if (LEVEL > 4) LEVEL = 1;
 		}
 		else if (c == 'W') cur_choice--;
@@ -1301,10 +1299,8 @@ void Menu()
 					exit(0);
 				if (menu_choice == 0) {//PLAY
 					ProcessStart();
-					if (STATE == 1) {
-						if (sound_ == 1) PlaySound(NULL, NULL, SND_ASYNC);
-						return;
-					}
+					if (sound_ == 1) PlaySound(NULL, NULL, SND_ASYNC);
+					if (STATE == 1) return;
 				}
 				if (menu_choice == 1) {//LOAD GAME 
 					ProcessLoad();
