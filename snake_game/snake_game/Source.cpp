@@ -1213,10 +1213,12 @@ void ProcessInstruction() {
 	GotoXY(x_filesave, y_filesave + 8);
 	cout << "Back    : A/Esc";
 	char c;
-	c = _toupper(getch());
-	if (c == ESC || c == 'A') {
-		Delete_detail_board();
-		return;
+	while (1) {
+		c = _toupper(getch());
+		if (c == ESC || c == 'A') {
+			Delete_detail_board();
+			return;
+		}
 	}
 }
 
