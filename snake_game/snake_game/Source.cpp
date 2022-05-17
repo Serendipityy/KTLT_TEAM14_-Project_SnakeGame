@@ -403,10 +403,10 @@ void LevelUp(int level_index) {
 
 	LEVEL++; //level tăng lên 1
 	if (sound_ == 1) PlaySound(TEXT("levelup.wav"), NULL, SND_ASYNC);
-	GotoXY(87, HEIGH_CONSOLE - 5);
+	GotoXY(94, HEIGH_CONSOLE - 5);
 	setTextColor(7);
-	cout << "Score:" << Score;
-	GotoXY(87, HEIGH_CONSOLE - 3);
+	cout << "SCORE:" << Score;
+	GotoXY(94, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
 	STATE = 1;
 
@@ -1088,10 +1088,10 @@ void Start() {
 	DrawTeam14();
 	DrawHowToPlay();
 
-	GotoXY(87, HEIGH_CONSOLE - 5);
+	GotoXY(94, HEIGH_CONSOLE - 5);
 	setTextColor(7);
-	cout << "Score:" << Score;
-	GotoXY(87, HEIGH_CONSOLE - 3);
+	cout << "SCORE:" << Score;
+	GotoXY(94, HEIGH_CONSOLE - 3);
 	cout << "LEVEL:" << LEVEL;
 	STATE = 1;
 	return;
