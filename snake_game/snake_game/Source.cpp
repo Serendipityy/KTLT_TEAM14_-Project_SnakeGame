@@ -1097,7 +1097,6 @@ void NewGame() {
 	cout << "Enter name : ";
 	cin >> Name;
 	system("cls");
-	ResetData();
 }
 
 void Start() {
@@ -1172,7 +1171,6 @@ void ProcessStart() {
 				else {
 					system("cls");
 					if (FOOD_INDEX == -1) DrawGate(gate[GATE_INDEX].x, gate[GATE_INDEX].y, 2, 2);
-					DrawMapLv(LEVEL);
 				}
 				break;
 			}
@@ -1185,28 +1183,43 @@ void ProcessStart() {
 			Sleep(50);
 		}
 	}
+	setTextColor(15);
+	DrawMapLv(LEVEL);
 	Start();
 }
 
 //Cài đặt âm thanh
 void ProcessSetting() {
+	string setting[] = { "Sound","Select Level" };
+	string Sound[] = { "Off ", "On " };
 	int x_mid_detail_board = x_filesave + 35, y_mid_detail_board = y_filesave;
-	GotoXY(x_mid_detail_board, y_mid_detail_board);
-	cout << "Sound";
 	char c;
+	int cur_choice = 0; // 0/1
 	while (1) {
-		GotoXY(x_mid_detail_board + 5, y_mid_detail_board);
+		GotoXY(x_mid_detail_board + 5, y_mid_detail_board+cur_choice*3);
 		setTextColor(11);
-		if (sound_ == 1) cout << "  on ";
-		else cout << "  off";
+		if (cur_choice == 0) cout <<setting[cur_choice]<< "  " << Sound[sound_];
+		else cout <<setting[cur_choice]<< "  " << LEVEL;
+		setTextColor(15);
+		GotoXY(x_mid_detail_board + 5, y_mid_detail_board + (1-cur_choice) * 3);
+		if ((1-cur_choice) == 0) cout << setting[(1-cur_choice)] << "  " << Sound[sound_];
+		else cout << setting[(1-cur_choice)] << "  " << LEVEL;
 		c = _toupper(getch());
+
 		if (c == '\r' || c == 'D') {
-			sound_ = 1 - sound_;
+			if (cur_choice == 0)
+				sound_ = 1 - sound_;
+			else LEVEL++;
+			if (LEVEL > 4) LEVEL = 1;
 		}
+		else if (c == 'W') cur_choice--;
+		else if (c == 'S') cur_choice++;
 		else if (c == ESC || c == 'A') {
 			Delete_detail_board();
 			return;
 		}
+		if (cur_choice > 1) cur_choice = 0;
+		else if (cur_choice < 0) cur_choice = 1;
 		Sleep(50);
 	}
 }
@@ -1419,8 +1432,8 @@ void main() {
 	ShowCur(0);
 	Draw_Newgame_intro();
 	FixconsoleWindow();
-	ResetData();
 	while (1) {
+		ResetData();
 		listFiles("save");
 		end_game = 0;
 		Menu();
