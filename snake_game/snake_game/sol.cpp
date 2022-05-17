@@ -213,17 +213,26 @@ int pos_calc(string s) {
 
 //Drawboard cho menu
 void Draw_Board(int x, int y, int width, int height, int curPosX, int curPosY) {
-	GotoXY(x, y);
 	setTextColor(9);
+	GotoXY(x, y);
 	cout << char(201);
-	for (int i = 1; i < width; i++) cout << char(205);
+	for (int i = 1; i < width/2; i++) {
+		cout << char(205) << char(205);
+		Sleep(1);
+	}
+	if (width+1 > width / 2 * 2) cout << char(205);
 	cout << char(187);
 	GotoXY(x, height + y); cout << char(200);
-	for (int i = 1; i < width; i++) cout << char(205);
+	for (int i = 1; i < width/2; i++) {
+		cout << char(205) << char(205);
+		Sleep(1);
+	}
+	if (width + 1 > width / 2 * 2) cout << char(205);
 	cout << char(188);
 	for (int i = y + 1; i < height + y; i++) {
 		GotoXY(x, i); cout << char(186);
 		GotoXY(x + width, i); cout << char(186);
+		Sleep(1);
 	}
 	GotoXY(curPosX, curPosY);
 
@@ -248,10 +257,10 @@ void Draw_Board(int x, int y, int width, int height, int curPosX, int curPosY) {
 void Draw_menu_board() {
 	setTextColor(9);
 	int x_menu = 2, y_menu = 5;
-	string top[3] = { R"(         /\        )",
-		              R"( _       \/       _)",
-					  R"((______/\/\/\______))" };
-	string mid[20] = { " |                | ",
+	string top[3] =                 { R"(         /\        )",
+		                          R"( _       \/       _)",
+				         R"((______/\/\/\______))" };
+	string mid[20] =                { " |                | ",
 					  " (                ( ",
 					  "  )                )",
 					  " (                ( ",
@@ -272,7 +281,7 @@ void Draw_menu_board() {
 					  "  )                )",
 					  " (                ( " };
 	string bot[2] = { " |________________| ",
-					R"( (_____/\/\/\_____))"};
+			R"( (_____/\/\/\_____))"};
 	for (int i = 16; i >5; i--) {
 		for (int j = i+1; j <33-i; j++)
 		{
