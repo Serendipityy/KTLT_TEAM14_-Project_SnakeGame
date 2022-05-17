@@ -178,9 +178,9 @@ void GenerateGate(int width, int height) {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
 		} while (Gate_Snake(x, y) == false
-			|| y < 5 && y > 15
-			|| x < 13 && x > 17 && y < 4 || x < 69 && x > 73 && y < 4
-			|| x < 13 && x > 17 && y < 16 && y > 20 || x < 69 && x > 73 && y < 16 && y > 20);
+			|| y < 4 && y > 15
+			&&  (x < 13 && x > 17 || x < 69 && x > 73
+			|| x < 13 && x > 17 && y < 16 && y > 20 || x < 69 && x > 73 && y < 16 && y > 20));
 		gate[GATE_INDEX] = { x,y };
 	}
 }
