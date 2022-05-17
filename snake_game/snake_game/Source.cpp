@@ -168,7 +168,7 @@ void GenerateGate(int width, int height) {
 		do {
 			x = rand() % (WIDTH_CONSOLE - 1 - width) + 9;
 			y = rand() % (HEIGH_CONSOLE - 2 - height) + 1;
-		} while (Gate_Snake(x, y) == false || (x < 39 && x > 57 && y < 6 && y > 18));
+		} while (Gate_Snake(x, y) == false || (x >= 33 && x <= 57 && y >= 6 && y <= 16));
 		gate[GATE_INDEX] = { x,y };
 	}
 	if (LEVEL == 4) {
