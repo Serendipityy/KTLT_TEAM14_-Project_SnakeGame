@@ -1,6 +1,5 @@
 ﻿#include "nkea.h"
 void Draw_Newgame_intro() {
-    PlaySound(TEXT("intro.wav"), NULL, SND_ASYNC);
     int intro_sp = 120;
     string pic[] = { R"(
             /"\  
@@ -2718,17 +2717,14 @@ R"(-----------------------------------------------------------------------------
 
     }
     getch();
+    PlaySound(TEXT("intro.wav"), NULL, SND_ASYNC);
     num = sizeof(next) / sizeof(next[0]);
-    //int num1 = sizeof(floor) / sizeof(floor[0]);
     for (int i = 0; i < num-29 ; i++) {
         GotoXY(0, 0);
         for (int j = i; j < i+29; j++) {
             cout << next[j] << endl;
         }
-        /*for (int j = 0; j < 4; j++) {
-            GotoXY(73, 0 + j);
-            cout << spider[j];
-        }*/if (_kbhit()) break;
+       if (_kbhit()) break;
         Sleep(i*4);
     }
     getch();
