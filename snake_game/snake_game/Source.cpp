@@ -752,7 +752,7 @@ void MoveUp() {
 			SIZE_SNAKE--;
 			if (SIZE_SNAKE == 0) {
 				//Level up
-				SIZE_SNAKE = 10;
+				SIZE_SNAKE = 6+Score;
 				LevelUp(LEVEL);
 			}
 		}
@@ -780,7 +780,7 @@ void MoveUp() {
 			SIZE_SNAKE--;
 			if (SIZE_SNAKE == 0) {
 				//Level up
-				SIZE_SNAKE = 14;
+				SIZE_SNAKE = 6+Score;
 				LevelUp(LEVEL);
 			}
 		}
@@ -808,7 +808,7 @@ void MoveUp() {
 			SIZE_SNAKE--;
 			if (SIZE_SNAKE == 0) {
 				//Level up
-				SIZE_SNAKE = 18;
+				SIZE_SNAKE = 6+Score;
 				LevelUp(LEVEL);
 			}
 		}
