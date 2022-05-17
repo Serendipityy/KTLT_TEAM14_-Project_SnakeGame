@@ -1181,6 +1181,8 @@ void ProcessSetting() {
 			if (cur_choice == 0)
 				sound_ = 1 - sound_;
 			else LEVEL++;
+			if (sound_ == 0) PlaySound(NULL, NULL, SND_ASYNC);
+			else PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
 			if (LEVEL > 4) LEVEL = 1;
 		}
 		else if (c == 'W') cur_choice--;
@@ -1270,8 +1272,10 @@ void Menu()
 					exit(0);
 				if (menu_choice == 0) {//PLAY
 					ProcessStart();
-					if (sound_ == 1) PlaySound(NULL, NULL, SND_ASYNC);
-					if (STATE == 1) return;
+					if (STATE == 1) {
+						if (sound_ == 1) PlaySound(NULL, NULL, SND_ASYNC);
+						return;
+					}
 				}
 				if (menu_choice == 1) {//LOAD GAME 
 					ProcessLoad();
