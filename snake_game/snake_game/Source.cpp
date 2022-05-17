@@ -365,7 +365,7 @@ void ProcessDead() {
 //Rắn ăn thức ăn
 void Eat() {
 	if (sound_ == 1) PlaySound(TEXT("eat.wav"), NULL, SND_ASYNC);
-	GotoXY(93, HEIGH_CONSOLE - 5);
+	GotoXY(100, HEIGH_CONSOLE - 5);
 	Score++; //Tăng điểm lên 1
 	cout << Score;
 	snake[SIZE_SNAKE] = food[FOOD_INDEX];
